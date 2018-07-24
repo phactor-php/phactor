@@ -135,9 +135,6 @@ final class DomainMessage
         return $this->causationId;
     }
 
-    /**
-     * @return object
-     */
     public function getMessage(): object
     {
         return $this->message;

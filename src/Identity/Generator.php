@@ -2,7 +2,7 @@
 
 namespace Carnage\Phactor\Identity;
 
-interface GeneratorInterface
+interface Generator
 {
     public function generateIdentity();
 }

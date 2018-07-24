@@ -3,7 +3,7 @@
 namespace Carnage\Phactor\Persistence;
 
 use Carnage\Phactor\Actor\ActorInterface;
-use Carnage\Phactor\Identity\GeneratorInterface;
+use Carnage\Phactor\Identity\Generator;
 use Carnage\Phactor\Message\ActorIdentity;
 use Carnage\Phactor\Message\Bus;
 
@@ -13,7 +13,7 @@ class ActorRepository
     private $eventStore;
     private $generator;
 
-    public function __construct(Bus $messageBus, EventStore $eventStore, GeneratorInterface $generator)
+    public function __construct(Bus $messageBus, EventStore $eventStore, Generator $generator)
     {
         $this->messageBus = $messageBus;
         $this->eventStore = $eventStore;

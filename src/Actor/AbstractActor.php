@@ -2,7 +2,7 @@
 
 namespace Carnage\Phactor\Actor;
 
-use Carnage\Phactor\Identity\GeneratorInterface;
+use Carnage\Phactor\Identity\Generator;
 use Carnage\Phactor\Message\ActorIdentity;
 use Carnage\Phactor\Message\DomainMessage;
 
@@ -22,7 +22,7 @@ class AbstractActor implements ActorInterface
     private $queue = [];
     private $id;
 
-    public function __construct(GeneratorInterface $identityGenerator, string $id = null)
+    public function __construct(Generator $identityGenerator, string $id = null)
     {
         $this->identityGenerator = $identityGenerator;
         if ($id === null) {
@@ -50,7 +50,7 @@ class AbstractActor implements ActorInterface
         }
     }
 
-    public static function fromHistory(GeneratorInterface $identityGenerator, string $id, DomainMessage ...$history)
+    public static function fromHistory(Generator $identityGenerator, string $id, DomainMessage ...$history)
     {
         $instance = new static($identityGenerator, $id);
         $instance->history = $history;

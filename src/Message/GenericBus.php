@@ -2,9 +2,11 @@
 
 namespace Carnage\Phactor\Message;
 
-use Carnage\Phactor\Identity\GeneratorInterface;
+use Carnage\Phactor\Identity\Generator;
+use Psr\Container\ContainerInterface;
+use Zend\Log\LoggerInterface;
 
-class GenericBus implements Bus
+final class GenericBus implements Bus
 {
     private $log;
     private $subscriptions;
@@ -21,7 +23,7 @@ class GenericBus implements Bus
      * @param $container
      * @param $identityGenerator
      */
-    public function __construct($log, $subscriptions, $container, GeneratorInterface $identityGenerator)
+    public function __construct(LoggerInterface $log, $subscriptions, ContainerInterface $container, Generator $identityGenerator)
     {
         $this->log = $log;
         $this->subscriptions = $subscriptions;
@@ -29,14 +31,42 @@ class GenericBus implements Bus
         $this->identityGenerator = $identityGenerator;
     }
 
-
-    public function fire(object $message)
+    public function subscribe(string $identifier, Handler $handler): void
     {
-        $domainMessage = DomainMessage::anonMessage($this->identityGenerator->generateIdentity(), $message);
+        $this->subscriptions[$identifier][] = $handler;
+    }
+
+    public function fire(object $message): array
+    {
+        $catcher = new class() implements Handler
+        {
+            public $messages;
+            public function handle(DomainMessage $message)
+            {
+                $this->messages[] = $message;
+            }
+        };
+
+        $correlationId = $this->identityGenerator->generateIdentity();
+        $domainMessage = DomainMessage::anonMessage($correlationId, $message);
+
+        $this->subscribe($correlationId, $catcher);
+
+        $this->handle($domainMessage);
+
+        array_pop($this->subscriptions[$correlationId]);
+
+        return $catcher->messages;
+    }
+
+    public function fireAndForget(object $message): void
+    {
+        $correlationId = $this->identityGenerator->generateIdentity();
+        $domainMessage = DomainMessage::anonMessage($correlationId, $message);
         $this->handle($domainMessage);
     }
 
-    public function handle(DomainMessage $message)
+    public function handle(DomainMessage $message): void
     {
         $this->queue[] = $message;
         if ($this->isDispatching) {
@@ -73,11 +103,27 @@ class GenericBus implements Bus
                 );
 
                 foreach ((array)$this->subscriptions[$interface] as $handler) {
-                    $this->container->get($handler)->handle($message);
+                    $this->getSubscriber($handler)->handle($message);
                 }
             }
         }
 
+        $correlationId = $message->getCorrelationId();
+        if (isset($this->subscriptions[$correlationId])) {
+            foreach ((array) $this->subscriptions[$correlationId] as $handler) {
+                $this->getSubscriber($handler)->handle($message);
+            }
+        }
+
         $this->isDispatching = false;
+    }
+
+    private function getSubscriber($subscriber)
+    {
+        if ($subscriber instanceof Handler) {
+            return $subscriber;
+        }
+
+        return $this->container->get($subscriber);
     }
 }
