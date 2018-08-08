@@ -2,14 +2,14 @@
 
 namespace Carnage\Phactor\Zend\ControllerPlugin;
 
-use Carnage\Phactor\Message\Bus;
+use Carnage\Phactor\Message\FiresMessages;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 class MessageBus extends AbstractPlugin
 {
     private $messageBus;
 
-    public function __construct(Bus $messageBus)
+    public function __construct(FiresMessages $messageBus)
     {
         $this->messageBus = $messageBus;
     }

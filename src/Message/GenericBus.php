@@ -36,36 +36,6 @@ final class GenericBus implements Bus
         $this->subscriptions[$identifier][] = $handler;
     }
 
-    public function fire(object $message): array
-    {
-        $catcher = new class() implements Handler
-        {
-            public $messages;
-            public function handle(DomainMessage $message)
-            {
-                $this->messages[] = $message;
-            }
-        };
-
-        $correlationId = $this->identityGenerator->generateIdentity();
-        $domainMessage = DomainMessage::anonMessage($correlationId, $message);
-
-        $this->subscribe($correlationId, $catcher);
-
-        $this->handle($domainMessage);
-
-        array_pop($this->subscriptions[$correlationId]);
-
-        return $catcher->messages;
-    }
-
-    public function fireAndForget(object $message): void
-    {
-        $correlationId = $this->identityGenerator->generateIdentity();
-        $domainMessage = DomainMessage::anonMessage($correlationId, $message);
-        $this->handle($domainMessage);
-    }
-
     public function handle(DomainMessage $message): void
     {
         $this->queue[] = $message;
