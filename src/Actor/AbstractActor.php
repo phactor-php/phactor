@@ -21,6 +21,7 @@ class AbstractActor implements ActorInterface
 
     private $queue = [];
     private $id;
+    private $metadata = [];
 
     public function __construct(Generator $identityGenerator, string $id = null)
     {
@@ -36,6 +37,7 @@ class AbstractActor implements ActorInterface
     {
         $this->correlationId = $message->getCorrelationId();
         $this->causationId = $message->getId();
+        $this->metadata = $message->getMetadata();
         $this->version++;
 
         $message = $message->forActor(ActorIdentity::fromActor($this), $this->version);
@@ -80,7 +82,7 @@ class AbstractActor implements ActorInterface
     protected function fire($message)
     {
         $this->version++;
-        $this->queue[$this->version] = DomainMessage::recordMessage(
+        $domainMessage = DomainMessage::recordMessage(
             $this->identityGenerator->generateIdentity(),
             $this->correlationId,
             $this->causationId,
@@ -88,6 +90,8 @@ class AbstractActor implements ActorInterface
             $this->version,
             $message
         );
+        $domainMessage->withMetadata($this->metadata);
+        $this->queue[$this->version] = $domainMessage;
     }
 
     private function getMethodFor($message, string $prefix): string
