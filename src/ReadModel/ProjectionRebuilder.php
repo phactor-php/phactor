@@ -4,6 +4,7 @@ namespace Carnage\Phactor\ReadModel;
 
 use Carnage\Phactor\Message\Handler;
 use Carnage\Phactor\Persistence\EventStore;
+use Doctrine\Common\Collections\Criteria;
 
 class ProjectionRebuilder
 {
