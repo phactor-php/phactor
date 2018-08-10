@@ -4,6 +4,7 @@
 namespace Carnage\Phactor\Zend;
 
 
+use Carnage\Phactor\Auth\AuthorisationDelegator;
 use Carnage\Phactor\Identity\Generator;
 use Carnage\Phactor\Identity\YouTubeStyleIdentityGenerator;
 use Carnage\Phactor\Message\Bus;
@@ -31,6 +32,7 @@ class Module
                     MessageHandlerManager::class => MessageHandlerManagerFactory::class,
                     Bus::class => BusFactory::class,
                     InMemoryRepositoryManager::class => InMemoryRepositoryManagerFactory::class,
+                    AuthorisationDelegator::class => AuthBusFactory::class,
                 ]
             ],
             'controller_plugins' => [
