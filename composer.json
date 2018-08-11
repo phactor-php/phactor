@@ -9,7 +9,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Carnage\\Phactor": "src"
+      "Carnage\\Phactor\\": "src"
     }
   }
 }
