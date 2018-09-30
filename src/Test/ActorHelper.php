@@ -11,6 +11,7 @@ use Carnage\Phactor\Message\MessageFirer;
 use Carnage\Phactor\Persistence\ActorRepository;
 use Carnage\Phactor\Persistence\InMemoryEventStore;
 use Carnage\Phactor\Zend\MessageHandlerManager;
+use PHPUnit\Framework\Assert;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Noop;
 
@@ -79,16 +80,25 @@ class ActorHelper
         return $this;
     }
 
+    public function expectNoMessages()
+    {
+        $strippedMessages = $this->stripMessages();
+
+        Assert::assertEmpty($strippedMessages);
+    }
+
     public function expect(array $messages)
     {
-        $strippedMessages = \array_map(function (DomainMessage $domainMessage) { return $domainMessage->getMessage(); }, $this->triggeredMessages);
+        $strippedMessages = $this->stripMessages();
 
-        if (empty($messages)) {
-            assert(empty($strippedMessages));
-            //strippedMessages must be empty
-        } else {
-            //loop through and test each message is equal.
-        }
+        Assert::assertArraySubset($messages, $strippedMessages, false);
+    }
+
+    public function expectOnly(array $messages)
+    {
+        $strippedMessages = $this->stripMessages();
+
+        Assert::assertEquals($messages, $strippedMessages, false);
     }
 
     public function getActorIdentity()
@@ -99,15 +109,19 @@ class ActorHelper
     private function prepareMessage($messageOrDomainMessage)
     {
         if ($messageOrDomainMessage instanceof DomainMessage) {
-            $message = $messageOrDomainMessage->getMessage();
-            $domainMessage = $messageOrDomainMessage;
-        } else {
-            $message = $messageOrDomainMessage;
-            $domainMessage = DomainMessage::anonMessage($this->generator->generateIdentity(), $message);
+            return $messageOrDomainMessage;
         }
 
+        return  DomainMessage::anonMessage($this->generator->generateIdentity(), $messageOrDomainMessage);
+    }
 
-
-        return $domainMessage;
+    /**
+     * @return array
+     */
+    private function stripMessages(): array
+    {
+        return  \array_map(function (DomainMessage $domainMessage) {
+            return $domainMessage->getMessage();
+        }, $this->triggeredMessages);
     }
 }

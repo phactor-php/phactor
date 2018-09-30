@@ -35,7 +35,7 @@ class MessageHandlerManager extends AbstractPluginManager
         {
             public function canCreate(ContainerInterface $container, $requestedName)
             {
-                return $requestedName instanceof ActorInterface;
+                return in_array(ActorInterface::class, \class_implements($requestedName));
             }
 
             public function __invoke(ContainerInterface $container, $requestedName, array $options = null)

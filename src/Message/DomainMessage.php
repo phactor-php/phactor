@@ -51,10 +51,9 @@ final class DomainMessage
      */
     private $metadata = [];
 
-    /**
-     * @var ActorIdentity
-     */
-    private $actorIdentity;
+    private $actorId;
+
+    private $actorClass;
 
     private function __construct(string $id)
     {
@@ -75,7 +74,8 @@ final class DomainMessage
         $instance->version = $version;
         $instance->message = $message;
         $instance->messageClass = get_class($message);
-        $instance->actorIdentity = $actorIdentity;
+        $instance->actorClass = $actorIdentity->getClass();
+        $instance->actorId = $actorIdentity->getId();
         $instance->correlationId = $correlationId;
         $instance->causationId = $causationId;
         return $instance;
@@ -84,9 +84,11 @@ final class DomainMessage
     public static function anonMessage(string $id, object $message)
     {
         $instance = new static($id);
+        $instance->time = new \DateTime();
         $instance->correlationId = $id;
         $instance->causationId = $id;
         $instance->message = $message;
+        $instance->messageClass = get_class($message);
 
         return $instance;
     }
@@ -94,7 +96,8 @@ final class DomainMessage
     public function forActor(ActorIdentity $newActor, int $version)
     {
         $instance = clone $this;
-        $instance->actorIdentity = $newActor;
+        $instance->actorClass = $newActor->getClass();
+        $instance->actorId = $newActor->getId();
         $instance->version = $version;
         return $instance;
     }
@@ -142,6 +145,10 @@ final class DomainMessage
 
     public function getActorIdentity(): ?ActorIdentity
     {
-        return $this->actorIdentity;
+        if ($this->actorId === null) {
+            return null;
+        }
+
+        return new ActorIdentity($this->actorClass, $this->actorId);
     }
 }

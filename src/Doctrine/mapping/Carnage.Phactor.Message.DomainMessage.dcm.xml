@@ -5,8 +5,9 @@
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <entity name="Carnage\Phactor\Message\DomainMessage">
-        <id name="id" />
-        <field name="id" type="string" />
+        <id name="id" type="string" />
+        <id name="actorClass" type="string" />
+        <id name="actorId" type="string" />
         <field name="correlationId" type="string" />
         <field name="causationId" type="string" />
         <field name="time" type="datetime" />
@@ -15,12 +16,6 @@
         <field name="message" type="json_object" />
         <field name="messageClass" type="string" />
         <field name="metadata" type="json_array" />
-        <embedded name="actorIdentity" class="Carnage\Phactor\Message\ActorIdentity" />
     </entity>
-
-    <embeddable name="Carnage\Phactor\Message\ActorIdentity">
-        <field name="class" type="string" />
-        <field name="id" type="string" />
-    </embeddable>
 
 </doctrine-mapping>

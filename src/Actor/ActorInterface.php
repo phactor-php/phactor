@@ -13,7 +13,9 @@ interface ActorInterface
 
     public function handle(DomainMessage $message);
 
-    public function newMessages(): array;
+    public function newHistory(): array;
+
+    public function publishableMessages(): array;
 
     public function id(): string;
 

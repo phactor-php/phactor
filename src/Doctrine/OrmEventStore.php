@@ -35,7 +35,7 @@ final class OrmEventStore implements EventStoreInterface
     public function load(ActorIdentity $identity): Iterable
     {
         $repository = $this->entityManager->getRepository(DomainMessage::class);
-        $events = $repository->findBy(['actorIdentity' => $identity]);
+        $events = $repository->findBy(['actorId' => $identity->getId(), 'actorClass' => $identity->getClass()]);
 
         if (empty($events)) {
             throw new NotFoundException('Not found');

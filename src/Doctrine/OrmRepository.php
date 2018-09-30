@@ -34,7 +34,7 @@ class OrmRepository implements Repository
 
     public function get($key)
     {
-        $this->entityManager->getRepository($this->entity)->find($key);
+        return $this->entityManager->getRepository($this->entity)->find($key);
     }
 
     public function matching(Criteria $criteria)

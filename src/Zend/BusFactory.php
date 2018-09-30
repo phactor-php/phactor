@@ -5,9 +5,8 @@ namespace Carnage\Phactor\Zend;
 use Carnage\Phactor\Identity\Generator;
 use Carnage\Phactor\Message\GenericBus;
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\Log\Logger;
+use Zend\Log\Writer\Noop;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class BusFactory implements FactoryInterface
@@ -16,7 +15,8 @@ class BusFactory implements FactoryInterface
     {
         $subscriptions = $container->get('Config')['message_subscriptions'];
         return new GenericBus(
-            $container->get('Log'),
+        //$container->get('Log'),
+            (new Logger())->addWriter(new Noop()),
             $subscriptions,
             $container->get(MessageHandlerManager::class),
             $container->get(Generator::class)

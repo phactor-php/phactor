@@ -50,12 +50,12 @@ final class GenericBus implements Bus
     }
 
     /**
-     * @param DomainMessage $message
+     * @param DomainMessage $domainMessage
      */
-    private function dispatch(DomainMessage $message): void
+    private function dispatch(DomainMessage $domainMessage): void
     {
         $this->isDispatching = true;
-        $messageClass = get_class($message);
+        $messageClass = get_class($domainMessage->getMessage());
 
         $interfaces = class_implements($messageClass);
         array_unshift($interfaces, $messageClass);
@@ -73,15 +73,15 @@ final class GenericBus implements Bus
                 );
 
                 foreach ((array)$this->subscriptions[$interface] as $handler) {
-                    $this->getSubscriber($handler)->handle($message);
+                    $this->getSubscriber($handler)->handle($domainMessage);
                 }
             }
         }
 
-        $correlationId = $message->getCorrelationId();
+        $correlationId = $domainMessage->getCorrelationId();
         if (isset($this->subscriptions[$correlationId])) {
             foreach ((array) $this->subscriptions[$correlationId] as $handler) {
-                $this->getSubscriber($handler)->handle($message);
+                $this->getSubscriber($handler)->handle($domainMessage);
             }
         }
 

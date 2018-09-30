@@ -18,7 +18,7 @@ class Module
     public function getConfig()
     {
         return [
-            'services' => [
+            'service_manager' => [
                 'aliases' => [
                     Generator::class => YouTubeStyleIdentityGenerator::class,
                     EventStore::class => InMemoryEventStore::class,

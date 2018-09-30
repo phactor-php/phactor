@@ -35,8 +35,6 @@ class MessageFirer implements FiresMessages
 
         $this->wrappedBus->handle($domainMessage);
 
-        array_pop($this->subscriptions[$correlationId]);
-
         return $catcher->messages;
     }
 

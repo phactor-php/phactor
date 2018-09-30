@@ -15,7 +15,7 @@ class Module
     public function getConfig()
     {
         return [
-            'services' => [
+            'service_manager' => [
                 'aliases' => [
                     EventStore::class => OrmEventStore::class,
                     RepositoryManager::class => OrmRepositoryManager::class,

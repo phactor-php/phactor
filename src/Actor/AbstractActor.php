@@ -19,7 +19,8 @@ class AbstractActor implements ActorInterface
     private $version = 0;
     private $history = [];
 
-    private $queue = [];
+    private $producedMessages = [];
+    private $handledMessages = [];
     private $id;
     private $metadata = [];
 
@@ -43,12 +44,13 @@ class AbstractActor implements ActorInterface
         $message = $message->forActor(ActorIdentity::fromActor($this), $this->version);
 
         $this->history[$this->version] = $message;
-        $this->queue[$this->version] = $message;
+        $this->handledMessages[$this->version] = $message;
 
-        $this->call($message, static::HANDLE_PREFIX);
+        $this->call($message, self::HANDLE_PREFIX);
+        $this->call($message, self::APPLY_PREFIX);
 
-        foreach ($this->queue as $queuedMessage) {
-            $this->call($queuedMessage, static::APPLY_PREFIX);
+        foreach ($this->producedMessages as $queuedMessage) {
+            $this->call($queuedMessage, self::APPLY_PREFIX);
         }
     }
 
@@ -58,15 +60,20 @@ class AbstractActor implements ActorInterface
         $instance->history = $history;
 
         foreach ($history as $message) {
-            $instance->call($message, static::APPLY_PREFIX);
+            $instance->call($message, self::APPLY_PREFIX);
         }
 
         return $instance;
     }
 
-    public function newMessages(): array
+    public function newHistory(): array
     {
-        return $this->queue;
+        return array_merge($this->handledMessages, $this->producedMessages);
+    }
+
+    public function publishableMessages(): array
+    {
+        return $this->producedMessages;
     }
 
     public function id(): string
@@ -76,7 +83,8 @@ class AbstractActor implements ActorInterface
 
     public function committed(): void
     {
-        $this->queue = [];
+        $this->producedMessages = [];
+        $this->handledMessages = [];
     }
 
     protected function fire($message)
@@ -91,7 +99,7 @@ class AbstractActor implements ActorInterface
             $message
         );
         $domainMessage->withMetadata($this->metadata);
-        $this->queue[$this->version] = $domainMessage;
+        $this->producedMessages[$this->version] = $domainMessage;
     }
 
     private function getMethodFor($message, string $prefix): string

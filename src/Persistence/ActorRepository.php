@@ -22,13 +22,14 @@ class ActorRepository
 
     public function save(ActorInterface $actor): void
     {
-        $messages = $actor->newMessages();
+        $messages = $actor->newHistory();
         $this->eventStore->save(ActorIdentity::fromActor($actor), ...$messages);
-        $actor->committed();
 
-        foreach ($messages as $message) {
+        foreach ($actor->publishableMessages() as $message) {
             $this->messageBus->handle($message);
         }
+
+        $actor->committed();
     }
 
     public function load(ActorIdentity $actorIdentity): ActorInterface
