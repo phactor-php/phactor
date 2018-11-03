@@ -57,18 +57,17 @@ final class DomainMessage
 
     private function __construct(string $id)
     {
-        $this->recorded = new \DateTime(); //always recorded now.
+        $this->recorded = new \DateTimeImmutable(); //always recorded now.
         $this->id = $id;
     }
 
     public static function recordMessage(
         string $id,
-        string $correlationId,
-        string $causationId,
+        ?DomainMessage $from,
         ActorIdentity $actorIdentity,
         int $version,
         object $message
-    ) {
+    ): DomainMessage {
         $instance = new static($id);
         $instance->time = new \DateTime();
         $instance->version = $version;
@@ -76,12 +75,32 @@ final class DomainMessage
         $instance->messageClass = get_class($message);
         $instance->actorClass = $actorIdentity->getClass();
         $instance->actorId = $actorIdentity->getId();
-        $instance->correlationId = $correlationId;
-        $instance->causationId = $causationId;
+        $instance->correlationId = $from ? $from->correlationId : $id;
+        $instance->causationId = $from ? $from->id : $id;
         return $instance;
     }
 
-    public static function anonMessage(string $id, object $message)
+    public static function recordFutureMessage(
+        string $id,
+        \DateTime $when,
+        ?DomainMessage $from,
+        ActorIdentity $actorIdentity,
+        int $version,
+        object $message
+    ): DomainMessage {
+        $instance = new static($id);
+        $instance->time = $when;
+        $instance->version = $version;
+        $instance->message = $message;
+        $instance->messageClass = get_class($message);
+        $instance->actorClass = $actorIdentity->getClass();
+        $instance->actorId = $actorIdentity->getId();
+        $instance->correlationId = $from ? $from->correlationId : $id;
+        $instance->causationId = $from ? $from->id : $id;
+        return $instance;
+    }
+
+    public static function anonMessage(string $id, object $message): DomainMessage
     {
         $instance = new static($id);
         $instance->time = new \DateTime();
@@ -96,6 +115,8 @@ final class DomainMessage
     public function forActor(ActorIdentity $newActor, int $version)
     {
         $instance = clone $this;
+        $instance->recorded = new \DateTimeImmutable();
+        $instance->causationId = $instance->id;
         $instance->actorClass = $newActor->getClass();
         $instance->actorId = $newActor->getId();
         $instance->version = $version;
@@ -150,5 +171,15 @@ final class DomainMessage
         }
 
         return new ActorIdentity($this->actorClass, $this->actorId);
+    }
+
+    public function isInFuture()
+    {
+        return new \DateTime() < $this->time;
+    }
+
+    public function getTime()
+    {
+        return $this->time;
     }
 }

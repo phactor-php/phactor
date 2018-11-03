@@ -13,16 +13,15 @@ class AbstractActor implements ActorInterface
 
     private $identityGenerator;
 
-    private $correlationId;
-    private $causationId;
-
     private $version = 0;
-    private $history = [];
 
+    /** @var DomainMessage */
+    private $handlingMessage;
+
+    private $history = [];
     private $producedMessages = [];
     private $handledMessages = [];
     private $id;
-    private $metadata = [];
 
     public function __construct(Generator $identityGenerator, string $id = null)
     {
@@ -36,9 +35,7 @@ class AbstractActor implements ActorInterface
 
     public function handle(DomainMessage $message)
     {
-        $this->correlationId = $message->getCorrelationId();
-        $this->causationId = $message->getId();
-        $this->metadata = $message->getMetadata();
+        $this->handlingMessage = $message;
         $this->version++;
 
         $message = $message->forActor(ActorIdentity::fromActor($this), $this->version);
@@ -52,6 +49,8 @@ class AbstractActor implements ActorInterface
         foreach ($this->producedMessages as $queuedMessage) {
             $this->call($queuedMessage, self::APPLY_PREFIX);
         }
+
+        $this->handlingMessage = null;
     }
 
     public static function fromHistory(Generator $identityGenerator, string $id, DomainMessage ...$history)
@@ -60,6 +59,7 @@ class AbstractActor implements ActorInterface
         $instance->history = $history;
 
         foreach ($history as $message) {
+            $instance->version++;
             $instance->call($message, self::APPLY_PREFIX);
         }
 
@@ -92,13 +92,27 @@ class AbstractActor implements ActorInterface
         $this->version++;
         $domainMessage = DomainMessage::recordMessage(
             $this->identityGenerator->generateIdentity(),
-            $this->correlationId,
-            $this->causationId,
+            $this->handlingMessage,
             new ActorIdentity(get_class($this), $this->id),
             $this->version,
             $message
         );
-        $domainMessage->withMetadata($this->metadata);
+        $domainMessage->withMetadata($this->handlingMessage->getMetadata());
+        $this->producedMessages[$this->version] = $domainMessage;
+    }
+
+    protected function schedule($message, \DateTime $when)
+    {
+        $this->version++;
+        $domainMessage = DomainMessage::recordFutureMessage(
+            $this->identityGenerator->generateIdentity(),
+            $when,
+            $this->handlingMessage,
+            new ActorIdentity(get_class($this), $this->id),
+            $this->version,
+            $message
+        );
+        $domainMessage->withMetadata($this->handlingMessage->getMetadata());
         $this->producedMessages[$this->version] = $domainMessage;
     }
 

@@ -10,6 +10,8 @@ use Carnage\Phactor\Identity\YouTubeStyleIdentityGenerator;
 use Carnage\Phactor\Message\Bus;
 use Carnage\Phactor\Persistence\EventStore;
 use Carnage\Phactor\Persistence\InMemoryEventStore;
+use Carnage\Phactor\Zend\Cli\Cron;
+use Carnage\Phactor\Zend\Cli\CronFactory;
 use Carnage\Phactor\Zend\ControllerPlugin\MessageBusFactory;
 use Carnage\Phactor\Zend\ControllerPlugin\RepositoryFactory;
 
@@ -39,6 +41,11 @@ class Module
                 'factories' => [
                     'messageBus' => MessageBusFactory::class,
                     'repository' => RepositoryFactory::class,
+                ]
+            ],
+            'cli_commands' => [
+                'factories' => [
+                    Cron::class => CronFactory::class,
                 ]
             ],
             'message_handlers' => [],
