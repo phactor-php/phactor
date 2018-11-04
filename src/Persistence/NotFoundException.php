@@ -1,6 +1,6 @@
 <?php
 
-namespace Carnage\Phactor\Persistence;
+namespace Phactor\Persistence;
 
 class NotFoundException extends \RuntimeException
 {

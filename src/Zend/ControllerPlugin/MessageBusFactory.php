@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Carnage\Phactor\Zend\ControllerPlugin;
+namespace Phactor\Zend\ControllerPlugin;
 
 
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Message\MessageFirer;
+use Phactor\Identity\Generator;
+use Phactor\Message\Bus;
+use Phactor\Message\MessageFirer;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 

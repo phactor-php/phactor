@@ -6,10 +6,10 @@
  * Time: 08:47
  */
 
-namespace Carnage\Phactor\Message;
+namespace Phactor\Message;
 
 
-use Carnage\Phactor\Actor\ActorInterface;
+use Phactor\Actor\ActorInterface;
 
 final class ActorIdentity
 {

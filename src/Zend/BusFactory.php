@@ -1,12 +1,12 @@
 <?php
 
-namespace Carnage\Phactor\Zend;
+namespace Phactor\Zend;
 
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\DelayedMessage\DeferredMessage;
-use Carnage\Phactor\Message\DelayedMessage\DelayedMessageBus;
-use Carnage\Phactor\Message\GenericBus;
-use Carnage\Phactor\Persistence\EventStore;
+use Phactor\Identity\Generator;
+use Phactor\Message\DelayedMessage\DeferredMessage;
+use Phactor\Message\DelayedMessage\DelayedMessageBus;
+use Phactor\Message\GenericBus;
+use Phactor\Persistence\EventStore;
 use Interop\Container\ContainerInterface;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Noop;

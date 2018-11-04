@@ -1,17 +1,17 @@
 <?php
 
-namespace Carnage\Phactor\Doctrine\Zend;
+namespace Phactor\Doctrine\Zend;
 
-use Carnage\Phactor\Actor\ActorInterface;
-use Carnage\Phactor\Doctrine\OrmRepository;
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Message\GenericHandler;
-use Carnage\Phactor\Message\Handler;
-use Carnage\Phactor\Persistence\ActorRepository;
-use Carnage\Phactor\Persistence\EventStore;
-use Carnage\Phactor\ReadModel\Repository;
-use Carnage\Phactor\Zend\RepositoryManager;
+use Phactor\Actor\ActorInterface;
+use Phactor\Doctrine\OrmRepository;
+use Phactor\Identity\Generator;
+use Phactor\Message\Bus;
+use Phactor\Message\GenericHandler;
+use Phactor\Message\Handler;
+use Phactor\Persistence\ActorRepository;
+use Phactor\Persistence\EventStore;
+use Phactor\ReadModel\Repository;
+use Phactor\Zend\RepositoryManager;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractPluginManager;

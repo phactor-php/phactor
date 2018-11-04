@@ -1,12 +1,12 @@
 <?php
 
-namespace Carnage\Phactor\Message\DelayedMessage;
+namespace Phactor\Message\DelayedMessage;
 
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Message\DomainMessage;
-use Carnage\Phactor\Message\Handler;
-use Carnage\Phactor\Persistence\EventStore;
-use Carnage\Phactor\ReadModel\Repository;
+use Phactor\Message\Bus;
+use Phactor\Message\DomainMessage;
+use Phactor\Message\Handler;
+use Phactor\Persistence\EventStore;
+use Phactor\ReadModel\Repository;
 use Doctrine\Common\Collections\Criteria;
 
 class DelayedMessageBus implements Bus

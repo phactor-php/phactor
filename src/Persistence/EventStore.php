@@ -1,8 +1,8 @@
 <?php
-namespace Carnage\Phactor\Persistence;
+namespace Phactor\Persistence;
 
-use Carnage\Phactor\Message\ActorIdentity;
-use Carnage\Phactor\Message\DomainMessage;
+use Phactor\Message\ActorIdentity;
+use Phactor\Message\DomainMessage;
 use Doctrine\Common\Collections\Criteria;
 
 interface EventStore

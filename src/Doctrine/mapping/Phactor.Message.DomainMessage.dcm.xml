@@ -4,7 +4,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <entity name="Carnage\Phactor\Message\DomainMessage">
+    <entity name="Phactor\Message\DomainMessage">
         <id name="id" type="string" />
         <id name="actorClass" type="string" />
         <id name="actorId" type="string" />

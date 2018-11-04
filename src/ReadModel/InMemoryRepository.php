@@ -1,6 +1,6 @@
 <?php
 
-namespace Carnage\Phactor\ReadModel;
+namespace Phactor\ReadModel;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;

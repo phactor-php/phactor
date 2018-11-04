@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Carnage\Phactor\Auth;
+namespace Phactor\Auth;
 
 
 class AnonUser implements User

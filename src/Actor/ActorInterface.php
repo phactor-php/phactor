@@ -1,9 +1,9 @@
 <?php
 
-namespace Carnage\Phactor\Actor;
+namespace Phactor\Actor;
 
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\DomainMessage;
+use Phactor\Identity\Generator;
+use Phactor\Message\DomainMessage;
 
 interface ActorInterface
 {

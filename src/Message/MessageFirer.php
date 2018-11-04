@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Carnage\Phactor\Message;
+namespace Phactor\Message;
 
 
-use Carnage\Phactor\Identity\Generator;
+use Phactor\Identity\Generator;
 
 class MessageFirer implements FiresMessages
 {

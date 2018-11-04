@@ -1,8 +1,8 @@
 <?php
 
-namespace Carnage\Phactor\Zend\ControllerPlugin;
+namespace Phactor\Zend\ControllerPlugin;
 
-use Carnage\Phactor\Message\FiresMessages;
+use Phactor\Message\FiresMessages;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 class MessageBus extends AbstractPlugin

@@ -1,6 +1,6 @@
 <?php
 
-namespace Carnage\Phactor\Identity;
+namespace Phactor\Identity;
 
 interface Generator
 {

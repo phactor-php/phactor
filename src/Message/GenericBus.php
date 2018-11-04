@@ -1,8 +1,8 @@
 <?php
 
-namespace Carnage\Phactor\Message;
+namespace Phactor\Message;
 
-use Carnage\Phactor\Identity\Generator;
+use Phactor\Identity\Generator;
 use Psr\Container\ContainerInterface;
 use Zend\Log\LoggerInterface;
 

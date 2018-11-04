@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Carnage\Phactor\Doctrine\Zend;
+namespace Phactor\Doctrine\Zend;
 
 
-use Carnage\Phactor\Doctrine\OrmEventStore;
+use Phactor\Doctrine\OrmEventStore;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;

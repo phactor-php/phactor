@@ -1,6 +1,6 @@
 <?php
 
-namespace Carnage\Phactor\ReadModel;
+namespace Phactor\ReadModel;
 
 interface ResettableInterface
 {

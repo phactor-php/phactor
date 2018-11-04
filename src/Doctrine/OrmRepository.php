@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Carnage\Phactor\Doctrine;
+namespace Phactor\Doctrine;
 
 
-use Carnage\Phactor\ReadModel\Repository;
+use Phactor\ReadModel\Repository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 

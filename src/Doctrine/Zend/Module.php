@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Carnage\Phactor\Doctrine\Zend;
+namespace Phactor\Doctrine\Zend;
 
 
-use Carnage\Phactor\Doctrine\Dbal\JsonObject;
-use Carnage\Phactor\Doctrine\OrmEventStore;
-use Carnage\Phactor\Persistence\EventStore;
-use Carnage\Phactor\Zend\RepositoryManager;
+use Phactor\Doctrine\Dbal\JsonObject;
+use Phactor\Doctrine\OrmEventStore;
+use Phactor\Persistence\EventStore;
+use Phactor\Zend\RepositoryManager;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 
 class Module
@@ -50,7 +50,7 @@ class Module
                     ],
                     'orm_default' => [
                         'drivers' => [
-                            'Carnage\Phactor\Message' => 'phactor'
+                            'Phactor\Message' => 'phactor'
                         ]
                     ]
                 ],

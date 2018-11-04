@@ -1,6 +1,6 @@
 <?php
 
-namespace Carnage\Phactor\Identity;
+namespace Phactor\Identity;
 
 /**
  * Generates a youtube style id matching regex: [0-9A-Za-z-_]{11}

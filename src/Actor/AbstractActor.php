@@ -1,10 +1,10 @@
 <?php
 
-namespace Carnage\Phactor\Actor;
+namespace Phactor\Actor;
 
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\ActorIdentity;
-use Carnage\Phactor\Message\DomainMessage;
+use Phactor\Identity\Generator;
+use Phactor\Message\ActorIdentity;
+use Phactor\Message\DomainMessage;
 
 class AbstractActor implements ActorInterface
 {

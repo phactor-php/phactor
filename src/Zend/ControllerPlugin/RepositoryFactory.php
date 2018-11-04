@@ -1,8 +1,8 @@
 <?php
 
-namespace Carnage\Phactor\Zend\ControllerPlugin;
+namespace Phactor\Zend\ControllerPlugin;
 
-use Carnage\Phactor\Zend\RepositoryManager;
+use Phactor\Zend\RepositoryManager;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 

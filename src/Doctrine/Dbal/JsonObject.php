@@ -1,5 +1,5 @@
 <?php
-namespace Carnage\Phactor\Doctrine\Dbal;
+namespace Phactor\Doctrine\Dbal;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;

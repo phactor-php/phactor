@@ -1,8 +1,8 @@
 <?php
 
-namespace Carnage\Phactor\Zend\Cli;
+namespace Phactor\Zend\Cli;
 
-use Carnage\Phactor\Message\DelayedMessage\DelayedMessageBus;
+use Phactor\Message\DelayedMessage\DelayedMessageBus;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

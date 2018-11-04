@@ -1,8 +1,8 @@
 <?php
 
-namespace Carnage\Phactor\Message\DelayedMessage;
+namespace Phactor\Message\DelayedMessage;
 
-use Carnage\Phactor\Message\DomainMessage;
+use Phactor\Message\DomainMessage;
 
 class DeferredMessage
 {

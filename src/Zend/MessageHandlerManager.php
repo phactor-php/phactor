@@ -1,14 +1,14 @@
 <?php
 
-namespace Carnage\Phactor\Zend;
+namespace Phactor\Zend;
 
-use Carnage\Phactor\Actor\ActorInterface;
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Message\GenericHandler;
-use Carnage\Phactor\Message\Handler;
-use Carnage\Phactor\Persistence\ActorRepository;
-use Carnage\Phactor\Persistence\EventStore;
+use Phactor\Actor\ActorInterface;
+use Phactor\Identity\Generator;
+use Phactor\Message\Bus;
+use Phactor\Message\GenericHandler;
+use Phactor\Message\Handler;
+use Phactor\Persistence\ActorRepository;
+use Phactor\Persistence\EventStore;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;

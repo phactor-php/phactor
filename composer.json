@@ -1,5 +1,5 @@
 {
-  "name": "carnage/phactor",
+  "name": "phactor/phactor",
   "description": "PHP Message sourcing libaray",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Carnage\\Phactor\\": "src"
+      "Phactor\\": "src"
     }
   }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Carnage\Phactor\Doctrine\Zend;
+namespace Phactor\Doctrine\Zend;
 
 
 use Interop\Container\ContainerInterface;

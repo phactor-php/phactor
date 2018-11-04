@@ -1,9 +1,9 @@
 <?php
 
-namespace Carnage\Phactor\ReadModel;
+namespace Phactor\ReadModel;
 
-use Carnage\Phactor\Message\Handler;
-use Carnage\Phactor\Persistence\EventStore;
+use Phactor\Message\Handler;
+use Phactor\Persistence\EventStore;
 use Doctrine\Common\Collections\Criteria;
 
 class ProjectionRebuilder

@@ -1,9 +1,9 @@
 <?php
 
-namespace Carnage\Phactor\Zend\ControllerPlugin;
+namespace Phactor\Zend\ControllerPlugin;
 
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Zend\RepositoryManager;
+use Phactor\Message\Bus;
+use Phactor\Zend\RepositoryManager;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 class Repository extends AbstractPlugin

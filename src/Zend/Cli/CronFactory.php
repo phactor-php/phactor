@@ -1,10 +1,10 @@
 <?php
 
-namespace Carnage\Phactor\Zend\Cli;
+namespace Phactor\Zend\Cli;
 
 
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Message\DelayedMessage\DelayedMessageBus;
+use Phactor\Message\Bus;
+use Phactor\Message\DelayedMessage\DelayedMessageBus;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 

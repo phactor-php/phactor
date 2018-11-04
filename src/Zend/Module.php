@@ -1,19 +1,19 @@
 <?php
 
 
-namespace Carnage\Phactor\Zend;
+namespace Phactor\Zend;
 
 
-use Carnage\Phactor\Auth\AuthorisationDelegator;
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Identity\YouTubeStyleIdentityGenerator;
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Persistence\EventStore;
-use Carnage\Phactor\Persistence\InMemoryEventStore;
-use Carnage\Phactor\Zend\Cli\Cron;
-use Carnage\Phactor\Zend\Cli\CronFactory;
-use Carnage\Phactor\Zend\ControllerPlugin\MessageBusFactory;
-use Carnage\Phactor\Zend\ControllerPlugin\RepositoryFactory;
+use Phactor\Auth\AuthorisationDelegator;
+use Phactor\Identity\Generator;
+use Phactor\Identity\YouTubeStyleIdentityGenerator;
+use Phactor\Message\Bus;
+use Phactor\Persistence\EventStore;
+use Phactor\Persistence\InMemoryEventStore;
+use Phactor\Zend\Cli\Cron;
+use Phactor\Zend\Cli\CronFactory;
+use Phactor\Zend\ControllerPlugin\MessageBusFactory;
+use Phactor\Zend\ControllerPlugin\RepositoryFactory;
 
 class Module
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace Carnage\Phactor\Test;
+namespace Phactor\Test;
 
-use Carnage\Phactor\Identity\YouTubeStyleIdentityGenerator;
-use Carnage\Phactor\Message\ActorIdentity;
-use Carnage\Phactor\Message\DomainMessage;
-use Carnage\Phactor\Message\GenericBus;
-use Carnage\Phactor\Message\GenericHandler;
-use Carnage\Phactor\Message\MessageFirer;
-use Carnage\Phactor\Persistence\ActorRepository;
-use Carnage\Phactor\Persistence\InMemoryEventStore;
-use Carnage\Phactor\Zend\MessageHandlerManager;
+use Phactor\Identity\YouTubeStyleIdentityGenerator;
+use Phactor\Message\ActorIdentity;
+use Phactor\Message\DomainMessage;
+use Phactor\Message\GenericBus;
+use Phactor\Message\GenericHandler;
+use Phactor\Message\MessageFirer;
+use Phactor\Persistence\ActorRepository;
+use Phactor\Persistence\InMemoryEventStore;
+use Phactor\Zend\MessageHandlerManager;
 use PHPUnit\Framework\Assert;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Noop;

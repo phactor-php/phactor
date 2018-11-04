@@ -1,11 +1,11 @@
 <?php
 
-namespace Carnage\Phactor\Doctrine;
+namespace Phactor\Doctrine;
 
-use Carnage\Phactor\Message\ActorIdentity;
-use Carnage\Phactor\Message\DomainMessage;
-use Carnage\Phactor\Persistence\EventStore as EventStoreInterface;
-use Carnage\Phactor\Persistence\NotFoundException;
+use Phactor\Message\ActorIdentity;
+use Phactor\Message\DomainMessage;
+use Phactor\Persistence\EventStore as EventStoreInterface;
+use Phactor\Persistence\NotFoundException;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 

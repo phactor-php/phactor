@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Carnage\Phactor\Zend;
+namespace Phactor\Zend;
 
 
 use Zend\ServiceManager\ServiceLocatorInterface;

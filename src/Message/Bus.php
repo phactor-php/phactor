@@ -1,6 +1,6 @@
 <?php
 
-namespace Carnage\Phactor\Message;
+namespace Phactor\Message;
 
 interface Bus
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Carnage\Phactor\Persistence;
+namespace Phactor\Persistence;
 
-use Carnage\Phactor\Actor\ActorInterface;
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\ActorIdentity;
-use Carnage\Phactor\Message\Bus;
+use Phactor\Actor\ActorInterface;
+use Phactor\Identity\Generator;
+use Phactor\Message\ActorIdentity;
+use Phactor\Message\Bus;
 
 class ActorRepository
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Carnage\Phactor\Auth;
+namespace Phactor\Auth;
 
-use Carnage\Phactor\Message\Bus;
-use Carnage\Phactor\Message\DomainMessage;
-use Carnage\Phactor\Message\Handler;
+use Phactor\Message\Bus;
+use Phactor\Message\DomainMessage;
+use Phactor\Message\Handler;
 
 class AuthorisationDelegator implements Bus
 {

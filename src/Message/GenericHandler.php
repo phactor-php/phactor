@@ -1,8 +1,8 @@
 <?php
 
-namespace Carnage\Phactor\Message;
+namespace Phactor\Message;
 
-use Carnage\Phactor\Persistence\ActorRepository;
+use Phactor\Persistence\ActorRepository;
 
 class GenericHandler implements Handler
 {

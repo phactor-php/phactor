@@ -1,11 +1,11 @@
 <?php
 
-namespace Carnage\Phactor\Zend;
+namespace Phactor\Zend;
 
-use Carnage\Phactor\Auth\AnonUser;
-use Carnage\Phactor\Auth\AuthorisationDelegator;
-use Carnage\Phactor\Identity\Generator;
-use Carnage\Phactor\Message\GenericBus;
+use Phactor\Auth\AnonUser;
+use Phactor\Auth\AuthorisationDelegator;
+use Phactor\Identity\Generator;
+use Phactor\Message\GenericBus;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\Authentication\AuthenticationServiceInterface;
