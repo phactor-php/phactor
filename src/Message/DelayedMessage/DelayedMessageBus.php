@@ -2,6 +2,7 @@
 
 namespace Phactor\Message\DelayedMessage;
 
+use Doctrine\Common\Util\Debug;
 use Phactor\Message\Bus;
 use Phactor\Message\DomainMessage;
 use Phactor\Message\Handler;
@@ -40,19 +41,22 @@ class DelayedMessageBus implements Bus
 
     public function processMessages()
     {
-        $messages = $this->repository->matching(new Criteria());
-        foreach ($messages as $message) {
-            /** @var DeferredMessage $message */
-            if (!$message->isDispatchable()) {
+        $deferredMessages = $this->repository->matching(new Criteria());
+        foreach ($deferredMessages as $deferredMessage) {
+            /** @var DeferredMessage $deferredMessage */
+            if (!$deferredMessage->isDispatchable()) {
                 continue;
             }
 
-            $messages = $this->eventStore->eventsMatching((new Criteria())->where(Criteria::expr()->eq('id', $message->getId())));
+            $domainMessages = $this->eventStore->eventsMatching((new Criteria())->where(Criteria::expr()->eq('id', $deferredMessage->getId())));
+            if ($domainMessages instanceof \Traversable) {
+                $domainMessages = \iterator_to_array($domainMessages);
+            }
             //should only be one at this stage as it's not been dispatched
-            $domainMessage = current($messages);
+            $domainMessage = current($domainMessages);
 
             $this->handle($domainMessage);
-            $this->repository->remove($message);
+            $this->repository->remove($deferredMessage);
         }
 
         $this->repository->commit();
