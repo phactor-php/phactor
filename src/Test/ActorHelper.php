@@ -15,6 +15,9 @@ use PHPUnit\Framework\Assert;
 use Zend\Log\Logger;
 use Zend\Log\Writer\Noop;
 
+/**
+ * @TODO enable testing of scheduled message times
+ */
 class ActorHelper
 {
     private $messageBus;
@@ -53,8 +56,9 @@ class ActorHelper
 
         $this->actorIdentity = new ActorIdentity($for, $this->generator->peak());
 
-        $this->messageBus = new GenericBus(new Logger(new Noop()), [], new MessageHandlerManager(), $this->generator);
-        $this->messageFirer = new MessageFirer($this->generator, $this->messageBus);
+        $anonIdentityGenerator = new YouTubeStyleIdentityGenerator();
+        $this->messageBus = new GenericBus((new Logger())->addWriter(new Noop()), [], new MessageHandlerManager(), $anonIdentityGenerator);
+        $this->messageFirer = new MessageFirer($anonIdentityGenerator, $this->messageBus);
 
         $this->eventStore = new InMemoryEventStore();
         $this->repository = new ActorRepository($this->messageBus, $this->eventStore, $this->generator);
@@ -75,30 +79,29 @@ class ActorHelper
     public function when($message)
     {
         $this->messageBus->subscribe(\get_class($message), $this->handler);
-        $this->triggeredMessages = $this->messageFirer->fire($message);
+        $this->triggeredMessages = $this->stripMessages($this->messageFirer->fire($message));
+        $this->expect($message);
 
         return $this;
     }
 
-    public function expectNoMessages()
+    public function expectNoMoreMessages()
     {
-        $strippedMessages = $this->stripMessages();
-
-        Assert::assertEmpty($strippedMessages);
+        Assert::assertEmpty($this->triggeredMessages);
     }
 
-    public function expect(array $messages)
+    public function expect($message)
     {
-        $strippedMessages = $this->stripMessages();
+        Assert::assertContains(
+            $message,
+            $this->triggeredMessages,
+            '',
+            false,
+            false
+        );
 
-        Assert::assertArraySubset($messages, $strippedMessages, false);
-    }
-
-    public function expectOnly(array $messages)
-    {
-        $strippedMessages = $this->stripMessages();
-
-        Assert::assertEquals($messages, $strippedMessages, false);
+        $idx = \array_search($message, $this->triggeredMessages, false);
+        unset($this->triggeredMessages[$idx]);
     }
 
     public function getActorIdentity()
@@ -118,10 +121,10 @@ class ActorHelper
     /**
      * @return array
      */
-    private function stripMessages(): array
+    private function stripMessages(array $messages): array
     {
         return  \array_map(function (DomainMessage $domainMessage) {
             return $domainMessage->getMessage();
-        }, $this->triggeredMessages);
+        }, $messages);
     }
 }
