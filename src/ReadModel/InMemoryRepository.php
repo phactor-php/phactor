@@ -3,6 +3,7 @@
 namespace Phactor\ReadModel;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 
 class InMemoryRepository implements Repository
@@ -14,10 +15,9 @@ class InMemoryRepository implements Repository
         $this->collection = new ArrayCollection();
     }
 
-    public function add($element)
+    public function add($element): void
     {
         $this->collection->add($element);
-        return $this->collection->indexOf($element);
     }
 
     public function remove($element): void
@@ -30,7 +30,7 @@ class InMemoryRepository implements Repository
         return $this->collection->get($key);
     }
 
-    public function matching(Criteria $criteria)
+    public function matching(Criteria $criteria): Collection
     {
         return $this->collection->matching($criteria);
     }

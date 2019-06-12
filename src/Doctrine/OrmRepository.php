@@ -4,15 +4,13 @@
 namespace Phactor\Doctrine;
 
 
+use Doctrine\Common\Collections\Collection;
 use Phactor\ReadModel\Repository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrmRepository implements Repository
 {
-    /**
-     * @var EntityManagerInterface
-     */
     private $entityManager;
     private $entity;
 
@@ -22,7 +20,7 @@ class OrmRepository implements Repository
         $this->entity = $entity;
     }
 
-    public function add($element)
+    public function add($element): void
     {
         $this->entityManager->persist($element);
     }
@@ -37,7 +35,7 @@ class OrmRepository implements Repository
         return $this->entityManager->getRepository($this->entity)->find($key);
     }
 
-    public function matching(Criteria $criteria)
+    public function matching(Criteria $criteria): Collection
     {
         /** @var \Doctrine\ORM\EntityRepository $repository*/
         $repository = $this->entityManager->getRepository($this->entity);
