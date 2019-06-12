@@ -10,25 +10,22 @@ final class GenericBus implements Bus
 {
     private $log;
     private $subscriptions;
+    private $globalSubscriptions = [];
     private $container;
-    private $identityGenerator;
 
     private $isDispatching = false;
     private $queue = [];
 
-    /**
-     * Bus constructor.
-     * @param $log
-     * @param $subscriptions
-     * @param $container
-     * @param $identityGenerator
-     */
-    public function __construct(LoggerInterface $log, $subscriptions, ContainerInterface $container, Generator $identityGenerator)
+    public function __construct(LoggerInterface $log, $subscriptions, ContainerInterface $container)
     {
         $this->log = $log;
         $this->subscriptions = $subscriptions;
         $this->container = $container;
-        $this->identityGenerator = $identityGenerator;
+    }
+
+    public function stream(Handler $handler): void
+    {
+        $this->globalSubscriptions[] = $handler;
     }
 
     public function subscribe(string $identifier, Handler $handler): void

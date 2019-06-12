@@ -39,6 +39,11 @@ class DelayedMessageBus implements Bus
         $this->wrappedBus->subscribe($identifier, $handler);
     }
 
+    public function stream(Handler $handler): void
+    {
+        $this->wrappedBus->stream($handler);
+    }
+
     public function processMessages()
     {
         $deferredMessages = $this->repository->matching(new Criteria());

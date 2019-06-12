@@ -31,6 +31,11 @@ class AuthorisationDelegator implements Bus
         $this->wrappedBus->subscribe($identifier, $handler);
     }
 
+    public function stream(Handler $handler): void
+    {
+        $this->wrappedBus->stream($handler);
+    }
+
     private function checkAuth($message):void
     {
         if (!($message instanceof Restricted)) {

@@ -57,7 +57,7 @@ class ActorHelper
         $this->actorIdentity = new ActorIdentity($for, $this->generator->peak());
 
         $anonIdentityGenerator = new YouTubeStyleIdentityGenerator();
-        $this->messageBus = new GenericBus((new Logger())->addWriter(new Noop()), [], new MessageHandlerManager(), $anonIdentityGenerator);
+        $this->messageBus = new GenericBus((new Logger())->addWriter(new Noop()), [], new MessageHandlerManager());
         $this->messageFirer = new MessageFirer($anonIdentityGenerator, $this->messageBus);
 
         $this->eventStore = new InMemoryEventStore();

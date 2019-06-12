@@ -24,8 +24,7 @@ class AuthBusFactory implements FactoryInterface
         $wrappedBus = new GenericBus(
             $container->get('Log'),
             $subscriptions,
-            $container->get(MessageHandlerManager::class),
-            $container->get(Generator::class)
+            $container->get(MessageHandlerManager::class)
         );
 
         $auth = $container->get(AuthenticationServiceInterface::class);

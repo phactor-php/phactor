@@ -33,7 +33,7 @@ class ProjectorHelper
         $this->handler = new $for($this->repository);
 
         $anonIdentityGenerator = new YouTubeStyleIdentityGenerator();
-        $this->messageBus = new GenericBus((new Logger())->addWriter(new Noop()), [], new MessageHandlerManager(), $anonIdentityGenerator);
+        $this->messageBus = new GenericBus((new Logger())->addWriter(new Noop()), [], new MessageHandlerManager());
         $this->messageFirer = new MessageFirer($anonIdentityGenerator, $this->messageBus);
     }
 

@@ -25,11 +25,9 @@ class BusFactory implements FactoryInterface
         }
 
         $genericBus = new GenericBus(
-        //$container->get('Log'),
             (new Logger())->addWriter(new Noop()),
             $subscriptions,
-            $container->get(MessageHandlerManager::class),
-            $container->get(Generator::class)
+            $container->get(MessageHandlerManager::class)
         );
 
         $repository = $container->get(RepositoryManager::class)->get(DeferredMessage::class);
