@@ -16,6 +16,7 @@ use Phactor\Zend\Cli\Cron;
 use Phactor\Zend\Cli\CronFactory;
 use Phactor\Zend\ControllerPlugin\MessageBusFactory;
 use Phactor\Zend\ControllerPlugin\RepositoryFactory;
+use Zend\ServiceManager\Proxy\LazyServiceFactory;
 
 class Module
 {
@@ -27,6 +28,11 @@ class Module
                     EventStore::class => InMemoryEventStore::class,
                     Generator::class => YouTubeStyleIdentityGenerator::class,
                     RepositoryManager::class => InMemoryRepositoryManager::class,
+                ],
+                'delegators' => [
+                    ActorRepository::class => [
+                        LazyServiceFactory::class,
+                    ],
                 ],
                 'invokables' => [
                     InMemoryEventStore::class => InMemoryEventStore::class,
@@ -40,6 +46,11 @@ class Module
                     MessageHandlerManager::class => MessageHandlerManagerFactory::class,
                 ]
             ],
+            'lazy_services' => array(
+                'class_map' => array(
+                    ActorRepository::class => ActorRepository::class,
+                ),
+            ),
             'controller_plugins' => [
                 'factories' => [
                     'messageBus' => MessageBusFactory::class,
