@@ -7,53 +7,19 @@ namespace Phactor\Message;
  */
 final class DomainMessage
 {
-    /**
-     * @var string
-     */
     private $id;
-
-    /**
-     * @var string
-     */
     private $correlationId;
-
-    /**
-     * @var string
-     */
     private $causationId;
-    /**
-     * @var \DateTime
-     */
     private $time;
-
-    /**
-     * @var \DateTime
-     */
     private $recorded;
-
-    /**
-     * @var integer
-     */
     private $version;
-
-    /**
-     * @var object
-     */
     private $message;
-
-    /**
-     * @var string
-     */
     private $messageClass;
-
-    /**
-     * @var array
-     */
     private $metadata = [];
-
     private $actorId;
-
     private $actorClass;
+    private $producerClass;
+    private $producerId;
 
     private function __construct(string $id)
     {
@@ -68,6 +34,7 @@ final class DomainMessage
         int $version,
         object $message
     ): DomainMessage {
+
         $instance = new static($id);
         $instance->time = new \DateTime();
         $instance->version = $version;
@@ -75,8 +42,11 @@ final class DomainMessage
         $instance->messageClass = get_class($message);
         $instance->actorClass = $actorIdentity->getClass();
         $instance->actorId = $actorIdentity->getId();
+        $instance->producerClass = $actorIdentity->getClass();
+        $instance->producerId = $actorIdentity->getId();
         $instance->correlationId = $from ? $from->correlationId : $id;
         $instance->causationId = $from ? $from->id : $id;
+
         return $instance;
     }
 
@@ -88,6 +58,7 @@ final class DomainMessage
         int $version,
         object $message
     ): DomainMessage {
+
         $instance = new static($id);
         $instance->time = $when;
         $instance->version = $version;
@@ -95,8 +66,11 @@ final class DomainMessage
         $instance->messageClass = get_class($message);
         $instance->actorClass = $actorIdentity->getClass();
         $instance->actorId = $actorIdentity->getId();
+        $instance->producerClass = $actorIdentity->getClass();
+        $instance->producerId = $actorIdentity->getId();
         $instance->correlationId = $from ? $from->correlationId : $id;
         $instance->causationId = $from ? $from->id : $id;
+
         return $instance;
     }
 
@@ -116,10 +90,10 @@ final class DomainMessage
     {
         $instance = clone $this;
         $instance->recorded = new \DateTimeImmutable();
-        $instance->causationId = $instance->id;
         $instance->actorClass = $newActor->getClass();
         $instance->actorId = $newActor->getId();
         $instance->version = $version;
+
         return $instance;
     }
 
@@ -135,25 +109,16 @@ final class DomainMessage
         return $this->metadata;
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getCorrelationId(): string
     {
         return $this->correlationId;
     }
 
-    /**
-     * @return string
-     */
     public function getCausationId(): string
     {
         return $this->causationId;
@@ -181,5 +146,14 @@ final class DomainMessage
     public function getTime()
     {
         return $this->time;
+    }
+
+    public function getProducer(): ?ActorIdentity
+    {
+        if ($this->producerId === null) {
+            return null;
+        }
+
+        return new ActorIdentity($this->producerClass, $this->producerId);
     }
 }

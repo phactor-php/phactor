@@ -87,13 +87,13 @@ class AbstractActor implements ActorInterface
         $this->handledMessages = [];
     }
 
-    protected function fire($message)
+    protected function fire($message): void
     {
         $this->version++;
         $domainMessage = DomainMessage::recordMessage(
             $this->identityGenerator->generateIdentity(),
             $this->handlingMessage,
-            new ActorIdentity(get_class($this), $this->id),
+            $this->getActorIdentity(),
             $this->version,
             $message
         );
@@ -101,14 +101,14 @@ class AbstractActor implements ActorInterface
         $this->producedMessages[$this->version] = $domainMessage;
     }
 
-    protected function schedule($message, \DateTime $when)
+    protected function schedule($message, \DateTime $when): void
     {
         $this->version++;
         $domainMessage = DomainMessage::recordFutureMessage(
             $this->identityGenerator->generateIdentity(),
             $when,
             $this->handlingMessage,
-            new ActorIdentity(get_class($this), $this->id),
+            $this->getActorIdentity(),
             $this->version,
             $message
         );
@@ -129,5 +129,10 @@ class AbstractActor implements ActorInterface
         if (method_exists($this, $method)) {
             $this->$method($message->getMessage());
         }
+    }
+
+    private function getActorIdentity(): ActorIdentity
+    {
+        return new ActorIdentity(get_class($this), $this->id);
     }
 }
