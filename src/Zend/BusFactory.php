@@ -2,7 +2,6 @@
 
 namespace Phactor\Zend;
 
-use Phactor\Identity\Generator;
 use Phactor\Message\DelayedMessage\DeferredMessage;
 use Phactor\Message\DelayedMessage\DelayedMessageBus;
 use Phactor\Message\GenericBus;
@@ -17,21 +16,35 @@ class BusFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $subscriptions = $container->get('Config')['message_subscriptions'];
-        $providers = $container->get('Config')['message_subscription_providers'];
+        $phactorConfig = $container->get('Config')['phactor'];
+
+        $subscriptions = ArrayUtils::merge($container->get('Config')['message_subscriptions'], $phactorConfig['message_subscriptions']);
+        $providers = ArrayUtils::merge($container->get('Config')['message_subscription_providers'], $phactorConfig['message_subscription_providers']);
 
         foreach ($providers as $provider) {
             $subscriptions = ArrayUtils::merge($subscriptions, $provider::getSubscriptions());
         }
 
+        if ($phactorConfig['bus_logger'] === null) {
+            $logger = (new Logger())->addWriter(new Noop());
+        } else {
+            $logger = $container->get($phactorConfig['bus_logger']);
+        }
+
+        $messageHandlerManager = $container->get(MessageHandlerManager::class);
         $genericBus = new GenericBus(
-            (new Logger())->addWriter(new Noop()),
+            $logger,
             $subscriptions,
-            $container->get(MessageHandlerManager::class)
+            $messageHandlerManager
         );
 
-        $repository = $container->get(RepositoryManager::class)->get(DeferredMessage::class);
+        $streamSubscribers = $phactorConfig['message_stream_subscribers'];
+        foreach ($streamSubscribers as $streamSubscriber) {
+            $genericBus->stream($messageHandlerManager->get($streamSubscriber));
+        }
 
-        return new DelayedMessageBus($genericBus, $repository, $container->get(EventStore::class));
+        $delayedMessageRepository = $container->get(RepositoryManager::class)->get(DeferredMessage::class);
+
+        return new DelayedMessageBus($genericBus, $delayedMessageRepository, $container->get(EventStore::class));
     }
 }

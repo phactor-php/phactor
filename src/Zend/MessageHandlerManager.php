@@ -42,14 +42,8 @@ class MessageHandlerManager extends AbstractPluginManager
 
             public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
             {
-                $subscriptionRepository = $container->get(RepositoryManager::class)->get(Subscription::class);
-                $respository = new ActorRepository(
-                    $container->get(Bus::class),
-                    $container->get(EventStore::class),
-                    $container->get(Generator::class),
-                    new ActorSubscriptionPersistor($subscriptionRepository)
-                );
-                return new GenericHandler($requestedName, $respository);
+                $repository = $container->get(ActorRepository::class);
+                return new GenericHandler($requestedName, $repository);
             }
         };
         parent::__construct($configInstanceOrParentLocator, $config);

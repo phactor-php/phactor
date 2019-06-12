@@ -4,10 +4,12 @@
 namespace Phactor\Zend;
 
 
+use Phactor\Actor\ActorSubscriptionHandler;
 use Phactor\Auth\AuthorisationDelegator;
 use Phactor\Identity\Generator;
 use Phactor\Identity\YouTubeStyleIdentityGenerator;
 use Phactor\Message\Bus;
+use Phactor\Persistence\ActorRepository;
 use Phactor\Persistence\EventStore;
 use Phactor\Persistence\InMemoryEventStore;
 use Phactor\Zend\Cli\Cron;
@@ -22,19 +24,20 @@ class Module
         return [
             'service_manager' => [
                 'aliases' => [
-                    Generator::class => YouTubeStyleIdentityGenerator::class,
                     EventStore::class => InMemoryEventStore::class,
+                    Generator::class => YouTubeStyleIdentityGenerator::class,
                     RepositoryManager::class => InMemoryRepositoryManager::class,
                 ],
                 'invokables' => [
+                    InMemoryEventStore::class => InMemoryEventStore::class,
                     YouTubeStyleIdentityGenerator::class => YouTubeStyleIdentityGenerator::class,
-                    InMemoryEventStore::class => InMemoryEventStore::class
                 ],
                 'factories' => [
-                    MessageHandlerManager::class => MessageHandlerManagerFactory::class,
+                    ActorRepository::class => ActorRepositoryFactory::class,
+                    AuthorisationDelegator::class => AuthBusFactory::class,
                     Bus::class => BusFactory::class,
                     InMemoryRepositoryManager::class => InMemoryRepositoryManagerFactory::class,
-                    AuthorisationDelegator::class => AuthBusFactory::class,
+                    MessageHandlerManager::class => MessageHandlerManagerFactory::class,
                 ]
             ],
             'controller_plugins' => [
@@ -50,6 +53,22 @@ class Module
             ],
             'message_handlers' => [],
             'message_subscriptions' => [],
+            'message_subscription_providers' => [],
+
+            'phactor' => [
+                'bus_logger' => null,
+                'message_handlers' => [
+                    'factories' => [
+                        ActorSubscriptionHandler::class => ActorSubscriptionHandlerFactory::class,
+                    ],
+                ],
+                'message_rbac' => [],
+                'message_stream_subscribers' => [
+                    ActorSubscriptionHandler::class,
+                ],
+                'message_subscriptions' => [],
+                'message_subscription_providers' => [],
+            ],
         ];
     }
 }
