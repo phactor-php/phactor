@@ -7,9 +7,9 @@ use Phactor\Message\DomainMessage;
 
 interface ActorInterface
 {
-    public function __construct(Generator $identityGenerator, string $id = null);
+    public function __construct(Generator $identityGenerator, Subscriber $subscriber, string $id = null);
 
-    public static function fromHistory(Generator $identityGenerator, string $id, DomainMessage ...$history);
+    public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history);
 
     public function handle(DomainMessage $message);
 

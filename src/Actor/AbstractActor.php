@@ -13,6 +13,8 @@ class AbstractActor implements ActorInterface
 
     private $identityGenerator;
 
+    private $subscriber;
+
     private $version = 0;
 
     /** @var DomainMessage */
@@ -23,7 +25,7 @@ class AbstractActor implements ActorInterface
     private $handledMessages = [];
     private $id;
 
-    public function __construct(Generator $identityGenerator, string $id = null)
+    public function __construct(Generator $identityGenerator, Subscriber $subscriber, string $id = null)
     {
         $this->identityGenerator = $identityGenerator;
         if ($id === null) {
@@ -31,6 +33,20 @@ class AbstractActor implements ActorInterface
         }
 
         $this->id = $id;
+        $this->subscriber = $subscriber;
+    }
+
+    public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history)
+    {
+        $instance = new static($identityGenerator, $subscriber, $id);
+        $instance->history = $history;
+
+        foreach ($history as $message) {
+            $instance->version++;
+            $instance->call($message, self::APPLY_PREFIX);
+        }
+
+        return $instance;
     }
 
     public function handle(DomainMessage $message)
@@ -51,19 +67,6 @@ class AbstractActor implements ActorInterface
         }
 
         $this->handlingMessage = null;
-    }
-
-    public static function fromHistory(Generator $identityGenerator, string $id, DomainMessage ...$history)
-    {
-        $instance = new static($identityGenerator, $id);
-        $instance->history = $history;
-
-        foreach ($history as $message) {
-            $instance->version++;
-            $instance->call($message, self::APPLY_PREFIX);
-        }
-
-        return $instance;
     }
 
     public function newHistory(): array
@@ -114,6 +117,16 @@ class AbstractActor implements ActorInterface
         );
         $domainMessage->withMetadata($this->handlingMessage->getMetadata());
         $this->producedMessages[$this->version] = $domainMessage;
+    }
+
+    protected function subscribe(string $actor, string $id)
+    {
+        $this->subscriber->subscribe($this->getActorIdentity(), new ActorIdentity($actor, $id));
+    }
+
+    protected function unsubscribe(string $actor, string $id)
+    {
+        $this->subscriber->unsubscribe($this->getActorIdentity(), new ActorIdentity($actor, $id));
     }
 
     private function getMethodFor($message, string $prefix): string

@@ -2,6 +2,7 @@
 
 namespace Phactor\Test;
 
+use Phactor\Actor\ActorSubscriptionPersistor;
 use Phactor\Identity\YouTubeStyleIdentityGenerator;
 use Phactor\Message\ActorIdentity;
 use Phactor\Message\DomainMessage;
@@ -10,6 +11,7 @@ use Phactor\Message\GenericHandler;
 use Phactor\Message\MessageFirer;
 use Phactor\Persistence\ActorRepository;
 use Phactor\Persistence\InMemoryEventStore;
+use Phactor\ReadModel\InMemoryRepository;
 use Phactor\Zend\MessageHandlerManager;
 use PHPUnit\Framework\Assert;
 use Zend\Log\Logger;
@@ -61,7 +63,7 @@ class ActorHelper
         $this->messageFirer = new MessageFirer($anonIdentityGenerator, $this->messageBus);
 
         $this->eventStore = new InMemoryEventStore();
-        $this->repository = new ActorRepository($this->messageBus, $this->eventStore, $this->generator);
+        $this->repository = new ActorRepository($this->messageBus, $this->eventStore, $this->generator, new ActorSubscriptionPersistor(new InMemoryRepository()));
         $this->handler = new GenericHandler($for, $this->repository);
     }
 

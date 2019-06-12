@@ -3,6 +3,8 @@
 namespace Phactor\Zend;
 
 use Phactor\Actor\ActorInterface;
+use Phactor\Actor\ActorSubscriptionPersistor;
+use Phactor\Actor\Subscription;
 use Phactor\Identity\Generator;
 use Phactor\Message\Bus;
 use Phactor\Message\GenericHandler;
@@ -40,7 +42,13 @@ class MessageHandlerManager extends AbstractPluginManager
 
             public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
             {
-                $respository = new ActorRepository($container->get(Bus::class), $container->get(EventStore::class), $container->get(Generator::class));
+                $subscriptionRepository = $container->get(RepositoryManager::class)->get(Subscription::class);
+                $respository = new ActorRepository(
+                    $container->get(Bus::class),
+                    $container->get(EventStore::class),
+                    $container->get(Generator::class),
+                    new ActorSubscriptionPersistor($subscriptionRepository)
+                );
                 return new GenericHandler($requestedName, $respository);
             }
         };
