@@ -44,13 +44,13 @@ class Module
                     Bus::class => BusFactory::class,
                     InMemoryRepositoryManager::class => InMemoryRepositoryManagerFactory::class,
                     MessageHandlerManager::class => MessageHandlerManagerFactory::class,
-                ]
+                ],
+                'lazy_services' => [
+                    'class_map' => [
+                        ActorRepository::class => ActorRepository::class,
+                    ],
+                ],
             ],
-            'lazy_services' => array(
-                'class_map' => array(
-                    ActorRepository::class => ActorRepository::class,
-                ),
-            ),
             'controller_plugins' => [
                 'factories' => [
                     'messageBus' => MessageBusFactory::class,
