@@ -16,8 +16,8 @@
         <field name="message" type="json_object" />
         <field name="messageClass" type="string" />
         <field name="metadata" type="json_array" />
-        <field name="producerClass" type="string" />
-        <field name="producerId" type="string" />
+        <field name="producerClass" type="string" nullable="true" />
+        <field name="producerId" type="string" nullable="true" />
     </entity>
 
 </doctrine-mapping>
