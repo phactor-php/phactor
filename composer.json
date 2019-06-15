@@ -11,7 +11,8 @@
     "phpunit/phpunit": "^7.0.0",
     "jms/serializer": "^1.13",
     "ocramius/generated-hydrator": "2.2.0",
-    "carnage/zendfony-cli": "~0.3.0"
+    "carnage/zendfony-cli": "~0.3.0",
+    "ocramius/proxy-manager": "^2.2"
   },
   "autoload": {
     "psr-4": {
