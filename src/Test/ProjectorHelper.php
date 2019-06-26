@@ -3,14 +3,12 @@
 namespace Phactor\Test;
 
 use Phactor\Identity\YouTubeStyleIdentityGenerator;
-use Phactor\Message\ActorIdentity;
 use Phactor\Message\DomainMessage;
 use Phactor\Message\GenericBus;
-use Phactor\Message\GenericHandler;
+use Phactor\Message\Handler;
 use Phactor\Message\MessageFirer;
-use Phactor\Persistence\ActorRepository;
-use Phactor\Persistence\InMemoryEventStore;
 use Phactor\ReadModel\InMemoryRepository;
+use Phactor\ReadModel\Repository;
 use Phactor\Zend\MessageHandlerManager;
 use PHPUnit\Framework\Assert;
 use Zend\Log\Logger;
@@ -20,21 +18,39 @@ class ProjectorHelper
 {
     private $messageBus;
     private $handler;
+    /** @var Repository */
     private $repository;
-    private $projectorClass;
 
     private $triggeredMessages;
     private $messageFirer;
 
-    public function __construct($for)
+    private function __construct(Handler $handler)
     {
-        $this->projectorClass = $for;
-        $this->repository = new InMemoryRepository();
-        $this->handler = new $for($this->repository);
+        $this->handler = $handler;
 
         $anonIdentityGenerator = new YouTubeStyleIdentityGenerator();
         $this->messageBus = new GenericBus((new Logger())->addWriter(new Noop()), [], new MessageHandlerManager());
         $this->messageFirer = new MessageFirer($anonIdentityGenerator, $this->messageBus);
+    }
+
+    public static function fromClassName(string $className): ProjectorHelper
+    {
+        $repository = new InMemoryRepository();
+        $handler =  new $className($repository);
+
+        $instance = new static($handler);
+        $instance->repository = $repository;
+        return $instance;
+    }
+
+    public static function fromFactory(callable $factory): ProjectorHelper
+    {
+        $repository = new InMemoryRepository();
+        $handler =  $factory($repository);
+
+        $instance = new static($handler);
+        $instance->repository = $repository;
+        return $instance;
     }
 
     public function given($entity)
