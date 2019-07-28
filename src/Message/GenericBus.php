@@ -82,6 +82,10 @@ final class GenericBus implements Bus
             }
         }
 
+        foreach ($this->globalSubscriptions as $handler) {
+            $this->getSubscriber($handler)->handle($domainMessage);
+        }
+
         $this->isDispatching = false;
     }
 

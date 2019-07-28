@@ -50,7 +50,8 @@ class Module
                     ],
                     'orm_default' => [
                         'drivers' => [
-                            'Phactor\Message' => 'phactor'
+                            'Phactor\Message' => 'phactor',
+                            'Phactor\Actor' => 'phactor',
                         ]
                     ]
                 ],
