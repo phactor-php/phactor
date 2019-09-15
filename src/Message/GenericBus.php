@@ -52,6 +52,11 @@ final class GenericBus implements Bus
     private function dispatch(DomainMessage $domainMessage): void
     {
         $this->isDispatching = true;
+
+        foreach ($this->globalSubscriptions as $handler) {
+            $this->getSubscriber($handler)->handle($domainMessage);
+        }
+
         $messageClass = get_class($domainMessage->getMessage());
 
         $interfaces = class_implements($messageClass);
@@ -80,10 +85,6 @@ final class GenericBus implements Bus
             foreach ((array) $this->subscriptions[$correlationId] as $handler) {
                 $this->getSubscriber($handler)->handle($domainMessage);
             }
-        }
-
-        foreach ($this->globalSubscriptions as $handler) {
-            $this->getSubscriber($handler)->handle($domainMessage);
         }
 
         $this->isDispatching = false;

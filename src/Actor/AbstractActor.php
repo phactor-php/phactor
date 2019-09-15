@@ -129,6 +129,11 @@ class AbstractActor implements ActorInterface
         $this->subscriber->unsubscribe($this->getActorIdentity(), new ActorIdentity($actor, $id));
     }
 
+    protected function generateIdentity()
+    {
+        return $this->identityGenerator->generateIdentity();
+    }
+
     private function getMethodFor($message, string $prefix): string
     {
         $classParts = explode('\\', get_class($message));
