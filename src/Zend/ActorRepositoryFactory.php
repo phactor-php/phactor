@@ -1,19 +1,14 @@
 <?php
 
-
 namespace Phactor\Zend;
 
-
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
 use Phactor\Actor\ActorSubscriptionPersistor;
 use Phactor\Actor\Subscription;
 use Phactor\Identity\Generator;
 use Phactor\Message\Bus;
 use Phactor\Persistence\ActorRepository;
 use Phactor\Persistence\EventStore;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class ActorRepositoryFactory implements FactoryInterface
@@ -28,5 +23,4 @@ class ActorRepositoryFactory implements FactoryInterface
             new ActorSubscriptionPersistor($subscriptionRepository)
         );
     }
-
 }

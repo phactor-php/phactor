@@ -29,11 +29,6 @@ class Module
                     Generator::class => YouTubeStyleIdentityGenerator::class,
                     RepositoryManager::class => InMemoryRepositoryManager::class,
                 ],
-                'delegators' => [
-                    ActorRepository::class => [
-                        LazyServiceFactory::class,
-                    ],
-                ],
                 'invokables' => [
                     InMemoryEventStore::class => InMemoryEventStore::class,
                     YouTubeStyleIdentityGenerator::class => YouTubeStyleIdentityGenerator::class,
@@ -44,12 +39,7 @@ class Module
                     Bus::class => BusFactory::class,
                     InMemoryRepositoryManager::class => InMemoryRepositoryManagerFactory::class,
                     MessageHandlerManager::class => MessageHandlerManagerFactory::class,
-                ],
-                'lazy_services' => [
-                    'class_map' => [
-                        ActorRepository::class => ActorRepository::class,
-                    ],
-                ],
+                ]
             ],
             'controller_plugins' => [
                 'factories' => [

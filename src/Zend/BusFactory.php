@@ -35,13 +35,9 @@ class BusFactory implements FactoryInterface
         $genericBus = new GenericBus(
             $logger,
             $subscriptions,
-            $messageHandlerManager
+            $messageHandlerManager,
+            $phactorConfig['message_stream_subscribers']
         );
-
-        $streamSubscribers = $phactorConfig['message_stream_subscribers'];
-        foreach ($streamSubscribers as $streamSubscriber) {
-            $genericBus->stream($messageHandlerManager->get($streamSubscriber));
-        }
 
         $delayedMessageRepository = $container->get(RepositoryManager::class)->get(DeferredMessage::class);
 

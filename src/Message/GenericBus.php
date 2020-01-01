@@ -2,7 +2,6 @@
 
 namespace Phactor\Message;
 
-use Phactor\Identity\Generator;
 use Psr\Container\ContainerInterface;
 use Zend\Log\LoggerInterface;
 
@@ -16,11 +15,30 @@ final class GenericBus implements Bus
     private $isDispatching = false;
     private $queue = [];
 
-    public function __construct(LoggerInterface $log, $subscriptions, ContainerInterface $container)
+    public function __construct(LoggerInterface $log, array $subscriptions, ContainerInterface $container, array $streamSubscriptions = [])
     {
         $this->log = $log;
         $this->subscriptions = $subscriptions;
         $this->container = $container;
+        $this->globalSubscriptions = $streamSubscriptions;
+    }
+
+    public function lazySubscribe(string $identifier, string $handler): void
+    {
+        if (!($this->container->has($handler))) {
+            throw new \Exception(sprintf('Unknown handler %s', $handler));
+        }
+
+        $this->subscriptions[$identifier][] = $handler;
+    }
+
+    public function lazyStream(string $handler): void
+    {
+        if (!($this->container->has($handler))) {
+            throw new \Exception(sprintf('Unknown handler %s', $handler));
+        }
+
+        $this->globalSubscriptions[] = $handler;
     }
 
     public function stream(Handler $handler): void
@@ -46,15 +64,14 @@ final class GenericBus implements Bus
         } while (!empty($this->queue));
     }
 
-    /**
-     * @param DomainMessage $domainMessage
-     */
     private function dispatch(DomainMessage $domainMessage): void
     {
         $this->isDispatching = true;
 
         foreach ($this->globalSubscriptions as $handler) {
-            $this->getSubscriber($handler)->handle($domainMessage);
+            $subscriber = $this->getSubscriber($handler);
+            $this->log->info(sprintf('Global handler %s invoked', get_class($subscriber)));
+            $subscriber->handle($domainMessage);
         }
 
         $messageClass = get_class($domainMessage->getMessage());
@@ -64,28 +81,12 @@ final class GenericBus implements Bus
 
         foreach ($interfaces as $interface) {
             $this->log->info(sprintf('Dispatching %s (from %s)', $interface, $messageClass));
-            if (isset($this->subscriptions[$interface])) {
-                $this->log->info(
-                    sprintf(
-                        'Found %d handlers for: %s (from %s)',
-                        count($this->subscriptions[$interface]),
-                        $interface,
-                        $messageClass
-                    )
-                );
-
-                foreach ((array)$this->subscriptions[$interface] as $handler) {
-                    $this->getSubscriber($handler)->handle($domainMessage);
-                }
-            }
+            $this->handleSubscribers($domainMessage, $interface);
         }
 
         $correlationId = $domainMessage->getCorrelationId();
-        if (isset($this->subscriptions[$correlationId])) {
-            foreach ((array) $this->subscriptions[$correlationId] as $handler) {
-                $this->getSubscriber($handler)->handle($domainMessage);
-            }
-        }
+        $this->log->info(sprintf('Dispatching correlation Id %s (from %s)', $correlationId, $messageClass));
+        $this->handleSubscribers($domainMessage, $correlationId);
 
         $this->isDispatching = false;
     }
@@ -97,5 +98,25 @@ final class GenericBus implements Bus
         }
 
         return $this->container->get($subscriber);
+    }
+
+    private function handleSubscribers(DomainMessage $domainMessage, string $correlationId): void
+    {
+        if (isset($this->subscriptions[$correlationId])) {
+            $this->log->info(
+                sprintf(
+                    'Found %d handlers',
+                    count($this->subscriptions[$correlationId])
+                )
+            );
+
+            foreach ((array) $this->subscriptions[$correlationId] as $handler) {
+                $subscriber = $this->getSubscriber($handler);
+                $this->log->info(sprintf('Handler %s invoked', get_class($subscriber)));
+                $subscriber->handle($domainMessage);
+            }
+        } else {
+            $this->log->info('No handlers found');
+        }
     }
 }
