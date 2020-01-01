@@ -5,6 +5,7 @@ namespace Phactor\Zend;
 use Phactor\Message\DelayedMessage\DeferredMessage;
 use Phactor\Message\DelayedMessage\DelayedMessageBus;
 use Phactor\Message\GenericBus;
+use Phactor\Message\MessageSubscriptionProvider;
 use Phactor\Persistence\EventStore;
 use Interop\Container\ContainerInterface;
 use Zend\Log\Logger;
@@ -22,7 +23,15 @@ class BusFactory implements FactoryInterface
         $providers = ArrayUtils::merge($container->get('Config')['message_subscription_providers'], $phactorConfig['message_subscription_providers']);
 
         foreach ($providers as $provider) {
-            $subscriptions = ArrayUtils::merge($subscriptions, $provider::getSubscriptions());
+            $providerInstance = new $provider();
+            
+            if ($providerInstance instanceof MessageSubscriptionProvider) {
+                $newSubscriptions = $providerInstance->getSubscriptions();
+            } else {
+                $newSubscriptions = $provider::getSubscriptions();
+            }
+
+            $subscriptions = ArrayUtils::merge($subscriptions, $newSubscriptions);
         }
 
         if ($phactorConfig['bus_logger'] === null) {
