@@ -24,10 +24,11 @@ class BusFactory implements FactoryInterface
 
         foreach ($providers as $provider) {
             $providerInstance = new $provider();
-            
+
             if ($providerInstance instanceof MessageSubscriptionProvider) {
                 $newSubscriptions = $providerInstance->getSubscriptions();
             } else {
+                //@TODO deprecate
                 $newSubscriptions = $provider::getSubscriptions();
             }
 

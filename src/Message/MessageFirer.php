@@ -21,7 +21,7 @@ class MessageFirer implements FiresMessages
     {
         $catcher = new class() implements Handler
         {
-            public $messages;
+            public $messages = [];
             public function handle(DomainMessage $message)
             {
                 $this->messages[] = $message;

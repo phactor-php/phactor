@@ -16,7 +16,7 @@ class LinearGenerator implements Generator
 
     public function getNextId(): string
     {
-        strtoupper(dechex(self::A0000000000 + $this->id + 1));
+        return strtoupper(dechex(self::A0000000000 + $this->id + 1));
     }
 }
 
