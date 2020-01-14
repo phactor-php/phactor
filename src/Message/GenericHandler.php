@@ -17,8 +17,8 @@ class GenericHandler implements Handler
 
     public function handle(DomainMessage $message)
     {
-        if ($message->getMessage() instanceof HasActorId) {
-            $identity = $message->getMessage()->getActorId();
+        $identity = $this->actorClass::generateId($message);
+        if ($identity !== null) {
             $actor = $this->actorRepository->load(new ActorIdentity($this->actorClass, $identity));
         } else {
             $actor = $this->actorRepository->create($this->actorClass);

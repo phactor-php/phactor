@@ -5,6 +5,7 @@ namespace Phactor\Actor;
 use Phactor\Identity\Generator;
 use Phactor\Message\ActorIdentity;
 use Phactor\Message\DomainMessage;
+use Phactor\Message\HasActorId;
 
 class AbstractActor implements ActorInterface
 {
@@ -47,6 +48,16 @@ class AbstractActor implements ActorInterface
         }
 
         return $instance;
+    }
+
+    public static function generateId(DomainMessage $message): ?string
+    {
+        $message = $message->getMessage();
+        if ($message instanceof HasActorId) {
+            return $message->getActorId();
+        }
+
+        return null;
     }
 
     public function handle(DomainMessage $message)

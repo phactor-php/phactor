@@ -11,6 +11,8 @@ interface ActorInterface
 
     public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history);
 
+    public static function generateId(DomainMessage $message): ?string;
+
     public function handle(DomainMessage $message);
 
     public function newHistory(): array;
