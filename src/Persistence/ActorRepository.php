@@ -37,7 +37,11 @@ class ActorRepository
 
     public function load(ActorIdentity $actorIdentity): ActorInterface
     {
-        $messages = $this->eventStore->load($actorIdentity);
+        try {
+            $messages = $this->eventStore->load($actorIdentity);
+        } catch (NotFoundException $e) {
+            $messages = [];
+        }
         $className = $actorIdentity->getClass();
         /** @var ActorInterface $className */
         return $className::fromHistory($this->generator, $this->subscriber, $actorIdentity->getId(), ...$messages);

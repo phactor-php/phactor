@@ -3,6 +3,7 @@
 namespace Phactor\Message;
 
 use Phactor\Persistence\ActorRepository;
+use Phactor\Persistence\NotFoundException;
 
 class GenericHandler implements Handler
 {
