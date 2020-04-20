@@ -3,7 +3,7 @@
 namespace Phactor\ReadModel;
 
 use Phactor\Message\Handler;
-use Phactor\Persistence\EventStore;
+use Phactor\EventStore\EventStore;
 use Doctrine\Common\Collections\Criteria;
 
 class ProjectionRebuilder
