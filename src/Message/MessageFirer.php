@@ -4,44 +4,42 @@
 namespace Phactor\Message;
 
 
+use Phactor\DomainMessage;
 use Phactor\Identity\Generator;
+use Phactor\Message\Dispatcher\Capture;
 
 class MessageFirer implements FiresMessages
 {
     private $identityGenerator;
-    private $wrappedBus;
+    private $wrappedHandler;
 
-    public function __construct(Generator $identityGenerator, Bus $wrappedBus)
+    public function __construct(Generator $identityGenerator, Handler $wrappedHandler)
     {
         $this->identityGenerator = $identityGenerator;
-        $this->wrappedBus = $wrappedBus;
+        $this->wrappedHandler = $wrappedHandler;
     }
 
     public function fire(object $message): array
     {
-        $catcher = new class() implements Handler
-        {
-            public $messages = [];
-            public function handle(DomainMessage $message)
-            {
-                $this->messages[] = $message;
-            }
-        };
+        if (!($this->wrappedHandler instanceof Capture)) {
+            throw new \RuntimeException('Cannot use fire unless the passed handler is a capturing handler.');
+        }
 
         $correlationId = $this->identityGenerator->generateIdentity();
         $domainMessage = DomainMessage::anonMessage($correlationId, $message);
 
-        $this->wrappedBus->subscribe($correlationId, $catcher);
+        $this->wrappedHandler->handle($domainMessage);
 
-        $this->wrappedBus->handle($domainMessage);
+        $messages = $this->wrappedHandler->capturedMessages();
+        $this->wrappedHandler->reset();
 
-        return $catcher->messages;
+        return $messages;
     }
 
     public function fireAndForget(object $message): void
     {
         $correlationId = $this->identityGenerator->generateIdentity();
         $domainMessage = DomainMessage::anonMessage($correlationId, $message);
-        $this->wrappedBus->handle($domainMessage);
+        $this->wrappedHandler->handle($domainMessage);
     }
 }

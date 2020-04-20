@@ -1,24 +1,23 @@
 <?php
 
-namespace Phactor\Message\DelayedMessage;
+namespace Phactor\Message\Dispatcher;
 
-use Doctrine\Common\Util\Debug;
-use Phactor\Message\Bus;
-use Phactor\Message\DomainMessage;
+use Phactor\DomainMessage;
+use Phactor\Message\Dispatcher\Delay\DeferredMessage;
 use Phactor\Message\Handler;
-use Phactor\Persistence\EventStore;
+use Phactor\EventStore\EventStore;
 use Phactor\ReadModel\Repository;
 use Doctrine\Common\Collections\Criteria;
 
-class DelayedMessageBus implements Bus
+class Delay implements Handler
 {
-    private $wrappedBus;
+    private $wrappedHandler;
     private $repository;
     private $eventStore;
 
-    public function __construct(Bus $wrappedBus, Repository $repository, EventStore $eventStore)
+    public function __construct(Handler $wrappedHandler, Repository $repository, EventStore $eventStore)
     {
-        $this->wrappedBus = $wrappedBus;
+        $this->wrappedHandler = $wrappedHandler;
         $this->repository = $repository;
         $this->eventStore = $eventStore;
     }
@@ -31,17 +30,7 @@ class DelayedMessageBus implements Bus
             return;
         }
 
-        $this->wrappedBus->handle($message);
-    }
-
-    public function subscribe(string $identifier, Handler $handler): void
-    {
-        $this->wrappedBus->subscribe($identifier, $handler);
-    }
-
-    public function stream(Handler $handler): void
-    {
-        $this->wrappedBus->stream($handler);
+        $this->wrappedHandler->handle($message);
     }
 
     public function processMessages()

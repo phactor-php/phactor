@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Phactor\Auth;
-
+namespace Phactor\Message\Dispatcher\Authorise;
 
 class AccessDenied extends \RuntimeException
 {

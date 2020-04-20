@@ -1,8 +1,8 @@
 <?php
 
-namespace Phactor\Message\DelayedMessage;
+namespace Phactor\Message\Dispatcher\Delay;
 
-use Phactor\Message\DomainMessage;
+use Phactor\DomainMessage;
 
 class DeferredMessage
 {

@@ -1,20 +1,22 @@
 <?php
 
-namespace Phactor\Auth;
+namespace Phactor\Message\Dispatcher;
 
-use Phactor\Message\Bus;
-use Phactor\Message\DomainMessage;
+use Phactor\DomainMessage;
+use Phactor\Message\Dispatcher\Authorise\AccessDenied;
+use Phactor\Message\Dispatcher\Authorise\Restricted;
+use Phactor\Message\Dispatcher\Authorise\User;
 use Phactor\Message\Handler;
 
-class AuthorisationDelegator implements Bus
+class Authorise implements Handler
 {
-    private $wrappedBus;
+    private $wrappedHandler;
     private $rbac;
     private $currentUser;
 
-    public function __construct(Bus $wrappedBus, array $rbac, User $currentUser)
+    public function __construct(Handler $wrappedHandler, array $rbac, User $currentUser)
     {
-        $this->wrappedBus = $wrappedBus;
+        $this->wrappedHandler = $wrappedHandler;
         $this->rbac = $rbac;
         $this->currentUser = $currentUser;
     }
@@ -23,17 +25,7 @@ class AuthorisationDelegator implements Bus
     {
         $this->checkAuth($message->getMessage());
         $message = $this->addMetadata($message);
-        $this->wrappedBus->handle($message);
-    }
-
-    public function subscribe(string $identifier, Handler $handler): void
-    {
-        $this->wrappedBus->subscribe($identifier, $handler);
-    }
-
-    public function stream(Handler $handler): void
-    {
-        $this->wrappedBus->stream($handler);
+        $this->wrappedHandler->handle($message);
     }
 
     private function checkAuth($message):void

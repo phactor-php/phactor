@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Phactor\Auth;
+namespace Phactor\Message\Dispatcher\Authorise;
 
 
 interface User
