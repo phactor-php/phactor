@@ -1,10 +1,9 @@
 <?php
 
-namespace Phactor\Message;
+namespace Phactor;
 
-/**
- * Class DomainMessage
- */
+use Phactor\Actor\ActorIdentity;
+
 final class DomainMessage
 {
     private $id;
