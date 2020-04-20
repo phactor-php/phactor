@@ -4,5 +4,5 @@ namespace Phactor\Identity;
 
 interface Generator
 {
-    public function generateIdentity();
+    public function generateIdentity(): string;
 }
