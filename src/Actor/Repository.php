@@ -1,21 +1,20 @@
 <?php
 
-namespace Phactor\Persistence;
+namespace Phactor\Actor;
 
-use Phactor\Actor\ActorInterface;
-use Phactor\Actor\Subscriber;
+use Phactor\Actor\Subscription\Subscriber;
 use Phactor\Identity\Generator;
-use Phactor\Message\ActorIdentity;
-use Phactor\Message\Bus;
+use Phactor\Message\Handler;
+use Phactor\EventStore\EventStore;
 
-class ActorRepository
+class Repository
 {
     private $messageBus;
     private $eventStore;
     private $generator;
     private $subscriber;
 
-    public function __construct(Bus $messageBus, EventStore $eventStore, Generator $generator, Subscriber $subscriber)
+    public function __construct(Handler $messageBus, EventStore $eventStore, Generator $generator, Subscriber $subscriber)
     {
         $this->messageBus = $messageBus;
         $this->eventStore = $eventStore;
@@ -37,12 +36,9 @@ class ActorRepository
 
     public function load(ActorIdentity $actorIdentity): ActorInterface
     {
-        try {
-            $messages = $this->eventStore->load($actorIdentity);
-        } catch (NotFoundException $e) {
-            $messages = [];
-        }
+        $messages = $this->eventStore->load($actorIdentity);
         $className = $actorIdentity->getClass();
+
         /** @var ActorInterface $className */
         return $className::fromHistory($this->generator, $this->subscriber, $actorIdentity->getId(), ...$messages);
     }

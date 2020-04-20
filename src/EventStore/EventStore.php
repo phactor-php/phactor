@@ -1,8 +1,8 @@
 <?php
-namespace Phactor\Persistence;
+namespace Phactor\EventStore;
 
-use Phactor\Message\ActorIdentity;
-use Phactor\Message\DomainMessage;
+use Phactor\Actor\ActorIdentity;
+use Phactor\DomainMessage;
 use Doctrine\Common\Collections\Criteria;
 
 interface EventStore

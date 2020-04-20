@@ -1,9 +1,9 @@
 <?php
 
-namespace Phactor\Persistence;
+namespace Phactor\EventStore;
 
-use Phactor\Message\ActorIdentity;
-use Phactor\Message\DomainMessage;
+use Phactor\Actor\ActorIdentity;
+use Phactor\DomainMessage;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 
@@ -15,7 +15,7 @@ class InMemoryEventStore implements EventStore
     public function load(ActorIdentity $identity): Iterable
     {
         if (!isset($this->store[$identity->getClass()][$identity->getId()])) {
-            throw new NotFoundException();
+            throw new NoEventsFound();
         }
 
         return $this->store[$identity->getClass()][$identity->getId()];
