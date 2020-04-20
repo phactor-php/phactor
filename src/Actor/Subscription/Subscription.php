@@ -1,10 +1,10 @@
 <?php
 
-namespace Phactor\Actor;
+namespace Phactor\Actor\Subscription;
 
-use Phactor\Message\ActorIdentity;
+use Phactor\Actor\ActorIdentity;
 
-class Subscription
+final class Subscription
 {
     private $listenerClass;
     private $listenerId;

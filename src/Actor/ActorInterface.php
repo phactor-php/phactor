@@ -2,8 +2,9 @@
 
 namespace Phactor\Actor;
 
+use Phactor\Actor\Subscription\Subscriber;
 use Phactor\Identity\Generator;
-use Phactor\Message\DomainMessage;
+use Phactor\DomainMessage;
 
 interface ActorInterface
 {
@@ -11,7 +12,7 @@ interface ActorInterface
 
     public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history);
 
-    public static function generateId(DomainMessage $message): ?string;
+    public static function extractId(DomainMessage $message): ?string;
 
     public function handle(DomainMessage $message);
 

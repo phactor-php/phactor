@@ -1,20 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: imhotek
- * Date: 18/04/18
- * Time: 08:47
- */
 
-namespace Phactor\Message;
-
-
-use Phactor\Actor\ActorInterface;
+namespace Phactor\Actor;
 
 final class ActorIdentity
 {
     private $class;
-
     private $id;
 
     public function __construct(string $class, string $id)

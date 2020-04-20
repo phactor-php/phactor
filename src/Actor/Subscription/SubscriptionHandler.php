@@ -1,28 +1,26 @@
 <?php
 
-
-namespace Phactor\Actor;
-
+namespace Phactor\Actor\Subscription;
 
 use Doctrine\Common\Collections\Criteria;
-use Phactor\Message\ActorIdentity;
-use Phactor\Message\DomainMessage;
+use Phactor\Actor\ActorIdentity;
+use Phactor\Actor\Repository as ActorRepository;
+use Phactor\DomainMessage;
 use Phactor\Message\Handler;
-use Phactor\Persistence\ActorRepository;
-use Phactor\ReadModel\Repository;
+use Phactor\ReadModel\Repository as SubscriptionRepository;
 
-class ActorSubscriptionHandler implements Handler
+final class SubscriptionHandler implements Handler
 {
     private $repository;
     private $actorRepository;
 
-    public function __construct(Repository $repository, ActorRepository $actorRepository)
+    public function __construct(SubscriptionRepository $repository, ActorRepository $actorRepository)
     {
         $this->repository = $repository;
         $this->actorRepository = $actorRepository;
     }
 
-    public function handle(DomainMessage $message)
+    public function handle(DomainMessage $message): void
     {
         $producer = $message->getProducer();
         if (!($producer instanceof ActorIdentity)) {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Phactor\Actor;
+namespace Phactor\Actor\Subscription;
 
 use Doctrine\Common\Collections\Criteria;
-use Phactor\Message\ActorIdentity;
+use Phactor\Actor\ActorIdentity;
 use Phactor\ReadModel\Repository;
 
-class ActorSubscriptionPersistor implements Subscriber
+final class Subscriber
 {
     private $repository;
 

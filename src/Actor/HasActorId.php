@@ -1,7 +1,6 @@
 <?php
 
-namespace Phactor\Message;
-
+namespace Phactor\Actor;
 
 interface HasActorId
 {

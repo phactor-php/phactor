@@ -2,10 +2,11 @@
 
 namespace Phactor\Actor;
 
+use Phactor\Actor\Subscription\Subscriber;
 use Phactor\Identity\Generator;
-use Phactor\Message\ActorIdentity;
-use Phactor\Message\DomainMessage;
-use Phactor\Message\HasActorId;
+use Phactor\Actor\ActorIdentity;
+use Phactor\DomainMessage;
+use Phactor\Actor\HasActorId;
 
 class AbstractActor implements ActorInterface
 {
@@ -18,7 +19,7 @@ class AbstractActor implements ActorInterface
 
     private $version = 0;
 
-    /** @var DomainMessage */
+    /** @var ?DomainMessage */
     private $handlingMessage;
 
     private $history = [];
@@ -50,7 +51,7 @@ class AbstractActor implements ActorInterface
         return $instance;
     }
 
-    public static function generateId(DomainMessage $message): ?string
+    public static function extractId(DomainMessage $message): ?string
     {
         $message = $message->getMessage();
         if ($message instanceof HasActorId) {
