@@ -5,18 +5,23 @@ namespace Phactor\Message\Dispatcher;
 use Phactor\DomainMessage;
 use Phactor\Message\Handler;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class InMemory implements Handler
 {
     private $subscriptions;
     private $log;
 
-    public function __construct(array $subscriptions, LoggerInterface $log)
+    public function __construct(array $subscriptions, ?LoggerInterface $log = null)
     {
         foreach ($subscriptions as $event => $handlers) {
             foreach ((array) $handlers as $handler) {
                 $this->subscribe($event, $handler);
             }
+        }
+
+        if ($log === null) {
+            $log = new NullLogger();
         }
 
         $this->log = $log;

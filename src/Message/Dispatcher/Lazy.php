@@ -6,6 +6,7 @@ use Phactor\DomainMessage;
 use Phactor\Message\Handler;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class Lazy implements Handler
 {
@@ -13,16 +14,20 @@ class Lazy implements Handler
     private $log;
     private $container;
 
-    public function __construct(array $subscriptions, LoggerInterface $log, ContainerInterface $container)
+    public function __construct(array $subscriptions, ContainerInterface $container, ?LoggerInterface $log = null)
     {
+        if ($log === null) {
+            $log = new NullLogger();
+        }
+
+        $this->log = $log;
+        $this->container = $container;
+
         foreach ($subscriptions as $event => $handlers) {
             foreach ((array) $handlers as $handler) {
                 $this->subscribe($event, $handler);
             }
         }
-
-        $this->log = $log;
-        $this->container = $container;
     }
 
     public function subscribe(string $event, string $service): void
@@ -51,7 +56,8 @@ class Lazy implements Handler
                     )
                 );
 
-                foreach ((array)$this->subscriptions[$interface] as $handler) {
+                foreach ((array)$this->subscriptions[$interface] as $handlerName) {
+                    $handler = $this->container->get($handlerName);
                     $this->log->info(sprintf('Handler %s invoked', get_class($handler)));
                     $handler->handle($domainMessage);
                 }

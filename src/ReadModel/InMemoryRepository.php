@@ -22,7 +22,7 @@ class InMemoryRepository implements Repository
 
     public function remove($element): void
     {
-        $this->collection->remove($element);
+        $this->collection->removeElement($element);
     }
 
     public function get($key)
