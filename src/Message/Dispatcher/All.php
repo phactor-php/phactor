@@ -14,6 +14,11 @@ class All implements Handler
         $this->handlers = $handlers;
     }
 
+    public function append(Handler $handler): void
+    {
+        $this->handlers[] = $handler;
+    }
+
     public function handle(DomainMessage $message): void
     {
         foreach ($this->handlers as $handler) {

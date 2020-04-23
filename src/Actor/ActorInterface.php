@@ -14,6 +14,8 @@ interface ActorInterface
 
     public static function extractId(DomainMessage $message): ?string;
 
+    public static function getSubscriptions(): array;
+
     public function handle(DomainMessage $message);
 
     public function newHistory(): array;

@@ -14,14 +14,10 @@ class AbstractActor implements ActorInterface
     private const HANDLE_PREFIX = 'handle';
 
     private $identityGenerator;
-
     private $subscriber;
-
     private $version = 0;
-
     /** @var ?DomainMessage */
     private $handlingMessage;
-
     private $history = [];
     private $producedMessages = [];
     private $handledMessages = [];
@@ -59,6 +55,11 @@ class AbstractActor implements ActorInterface
         }
 
         return null;
+    }
+
+    public static function getSubscriptions(): array
+    {
+        return [];
     }
 
     public function handle(DomainMessage $message)
@@ -116,7 +117,7 @@ class AbstractActor implements ActorInterface
         $this->producedMessages[$this->version] = $domainMessage;
     }
 
-    protected function schedule($message, \DateTime $when): void
+    protected function schedule($message, \DateTimeImmutable $when): void
     {
         $this->version++;
         $domainMessage = DomainMessage::recordFutureMessage(

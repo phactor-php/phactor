@@ -7,30 +7,36 @@ use Phactor\Message\Handler;
 
 class Router implements Handler
 {
-    private $actorClass;
+    private $actorClasses;
     private $actorRepository;
 
-    public function __construct(string $actorClass, Repository $actorRepository)
+    public function __construct(Repository $actorRepository, string ...$actorClasses)
     {
-        if (!in_array(ActorInterface::class, class_implements($actorClass))) {
+        if (!in_array(ActorInterface::class, class_implements($actorClasses))) {
             throw new \RuntimeException('Actor must implement ActorInterface');
         }
 
         $this->actorRepository = $actorRepository;
-        $this->actorClass = $actorClass;
+        $this->actorClasses = $actorClasses;
     }
 
-    public function handle(DomainMessage $message): void
+    public function handle(DomainMessage $domainMessage): void
     {
-        $identity = $this->actorClass::extractId($message);
-        if ($identity !== null) {
-            $actor = $this->actorRepository->load(new ActorIdentity($this->actorClass, $identity));
-        } else {
-            $actor = $this->actorRepository->create($this->actorClass);
+        $messageClass = get_class($domainMessage->getMessage());
+        foreach ($this->actorClasses as $actorClass) {
+            $subscriptions = $actorClass::getSubscriptions();
+            if (in_array($messageClass, $subscriptions)) {
+                $identity = $actorClass::extractId($domainMessage);
+                if ($identity !== null) {
+                    $actor = $this->actorRepository->load(new ActorIdentity($actorClass, $identity));
+                } else {
+                    $actor = $this->actorRepository->create($actorClass);
+                }
+
+                $actor->handle($domainMessage);
+
+                $this->actorRepository->save($actor);
+            }
         }
-
-        $actor->handle($message);
-
-        $this->actorRepository->save($actor);
     }
 }

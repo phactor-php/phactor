@@ -39,7 +39,7 @@ class DelayTest extends TestCase
 
         $sut->handle(DomainMessage::recordFutureMessage(
             'id',
-            (new \DateTime())->add(new \DateInterval('P1D')),
+            (new \DateTimeImmutable())->add(new \DateInterval('P1D')),
             null,
             new ActorIdentity('class', 'id'),
             1,
@@ -54,7 +54,7 @@ class DelayTest extends TestCase
         $actorIdentity = new ActorIdentity('class', 'id');
         $futureMessage = DomainMessage::recordFutureMessage(
             '1',
-            (new \DateTime())->add(new \DateInterval('P1D')),
+            (new \DateTimeImmutable())->add(new \DateInterval('P1D')),
             null,
             $actorIdentity,
             2,
@@ -63,7 +63,7 @@ class DelayTest extends TestCase
 
         $pastMessage = DomainMessage::recordFutureMessage(
             '2',
-            (new \DateTime())->sub(new \DateInterval('P1D')),
+            (new \DateTimeImmutable())->sub(new \DateInterval('P1D')),
             null,
             $actorIdentity,
             1,

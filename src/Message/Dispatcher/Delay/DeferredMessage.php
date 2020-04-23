@@ -12,7 +12,7 @@ class DeferredMessage
     public function __construct(DomainMessage $message)
     {
         $this->id = $message->getId();
-        $this->time = \DateTimeImmutable::createFromMutable($message->getTime());
+        $this->time = $message->getTime();
     }
 
     public function isDispatchable(): bool

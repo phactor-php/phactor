@@ -6,23 +6,22 @@ use Phactor\Actor\ActorIdentity;
 
 final class DomainMessage
 {
-    private $id;
-    private $correlationId;
-    private $causationId;
-    private $time;
-    private $recorded;
-    private $version;
-    private $message;
-    private $messageClass;
-    private $metadata = [];
-    private $actorId;
-    private $actorClass;
-    private $producerClass;
-    private $producerId;
+    private string $id;
+    private string $correlationId;
+    private string $causationId;
+    private \DateTimeImmutable $time;
+    private object $message;
+    private array $metadata = [];
+    private ActorIdentity $producer;
+    private \DateTimeImmutable $produced;
+    private ActorIdentity $actor;
+    private int $version;
+    private \DateTimeImmutable $recorded;
 
     private function __construct(string $id)
     {
         $this->recorded = new \DateTimeImmutable(); //always recorded now.
+        $this->produced = new \DateTimeImmutable();
         $this->id = $id;
     }
 
@@ -35,14 +34,11 @@ final class DomainMessage
     ): DomainMessage {
 
         $instance = new static($id);
-        $instance->time = new \DateTime();
+        $instance->time = new \DateTimeImmutable();
         $instance->version = $version;
         $instance->message = $message;
-        $instance->messageClass = get_class($message);
-        $instance->actorClass = $actorIdentity->getClass();
-        $instance->actorId = $actorIdentity->getId();
-        $instance->producerClass = $actorIdentity->getClass();
-        $instance->producerId = $actorIdentity->getId();
+        $instance->actor = $actorIdentity;
+        $instance->producer = $actorIdentity;
         $instance->correlationId = $from ? $from->correlationId : $id;
         $instance->causationId = $from ? $from->id : $id;
 
@@ -51,7 +47,7 @@ final class DomainMessage
 
     public static function recordFutureMessage(
         string $id,
-        \DateTime $when,
+        \DateTimeImmutable $when,
         ?DomainMessage $from,
         ActorIdentity $actorIdentity,
         int $version,
@@ -62,11 +58,8 @@ final class DomainMessage
         $instance->time = $when;
         $instance->version = $version;
         $instance->message = $message;
-        $instance->messageClass = get_class($message);
-        $instance->actorClass = $actorIdentity->getClass();
-        $instance->actorId = $actorIdentity->getId();
-        $instance->producerClass = $actorIdentity->getClass();
-        $instance->producerId = $actorIdentity->getId();
+        $instance->actor = $actorIdentity;
+        $instance->producer = $actorIdentity;
         $instance->correlationId = $from ? $from->correlationId : $id;
         $instance->causationId = $from ? $from->id : $id;
 
@@ -76,11 +69,10 @@ final class DomainMessage
     public static function anonMessage(string $id, object $message): DomainMessage
     {
         $instance = new static($id);
-        $instance->time = new \DateTime();
+        $instance->time = new \DateTimeImmutable();
         $instance->correlationId = $id;
         $instance->causationId = $id;
         $instance->message = $message;
-        $instance->messageClass = get_class($message);
 
         return $instance;
     }
@@ -89,8 +81,7 @@ final class DomainMessage
     {
         $instance = clone $this;
         $instance->recorded = new \DateTimeImmutable();
-        $instance->actorClass = $newActor->getClass();
-        $instance->actorId = $newActor->getId();
+        $instance->actor = $newActor;
         $instance->version = $version;
 
         return $instance;
@@ -130,29 +121,26 @@ final class DomainMessage
 
     public function getActorIdentity(): ?ActorIdentity
     {
-        if ($this->actorId === null) {
-            return null;
-        }
-
-        return new ActorIdentity($this->actorClass, $this->actorId);
+        return $this->actor;
     }
 
-    public function isInFuture()
+    public function isInFuture(): bool
     {
         return new \DateTime() < $this->time;
     }
 
-    public function getTime()
+    public function getTime(): \DateTimeImmutable
     {
         return $this->time;
     }
 
     public function getProducer(): ?ActorIdentity
     {
-        if ($this->producerId === null) {
-            return null;
-        }
+        return $this->producer;
+    }
 
-        return new ActorIdentity($this->producerClass, $this->producerId);
+    public function isNewMessage(): bool
+    {
+        return $this->actor !== null && $this->actor->equals($this->producer);
     }
 }

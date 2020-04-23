@@ -23,6 +23,11 @@ final class ActorIdentity
         return $this->id;
     }
 
+    public function equals(ActorIdentity $other): bool
+    {
+        return $other->class === $this->class && $other->id === $this->id;
+    }
+
     public static function fromActor(ActorInterface $actor)
     {
         return new self(get_class($actor), $actor->id());
