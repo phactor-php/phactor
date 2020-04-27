@@ -10,6 +10,7 @@ final class DomainMessage
     private string $correlationId;
     private string $causationId;
     private \DateTimeImmutable $time;
+    private string $messageClass;
     private object $message;
     private array $metadata = [];
     private ActorIdentity $producer;
@@ -18,11 +19,17 @@ final class DomainMessage
     private int $version;
     private \DateTimeImmutable $recorded;
 
-    private function __construct(string $id)
+    private function __construct(string $id, object $message)
     {
-        $this->recorded = new \DateTimeImmutable(); //always recorded now.
-        $this->produced = new \DateTimeImmutable();
+        $dateTimeImmutable = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d h:i:s'));
+        $this->recorded = $dateTimeImmutable; //always recorded now.
+        $this->produced = $dateTimeImmutable;
+        $this->time = new $dateTimeImmutable;
         $this->id = $id;
+        $this->correlationId = $id;
+        $this->causationId = $id;
+        $this->message = $message;
+        $this->messageClass = get_class($message);
     }
 
     public static function recordMessage(
@@ -33,10 +40,8 @@ final class DomainMessage
         object $message
     ): DomainMessage {
 
-        $instance = new static($id);
-        $instance->time = new \DateTimeImmutable();
+        $instance = new static($id, $message);
         $instance->version = $version;
-        $instance->message = $message;
         $instance->actor = $actorIdentity;
         $instance->producer = $actorIdentity;
         $instance->correlationId = $from ? $from->correlationId : $id;
@@ -54,10 +59,9 @@ final class DomainMessage
         object $message
     ): DomainMessage {
 
-        $instance = new static($id);
-        $instance->time = $when;
+        $instance = new static($id, $message);
+        $instance->time = new \DateTimeImmutable($when->format('Y-m-d h:i:s'));
         $instance->version = $version;
-        $instance->message = $message;
         $instance->actor = $actorIdentity;
         $instance->producer = $actorIdentity;
         $instance->correlationId = $from ? $from->correlationId : $id;
@@ -68,19 +72,13 @@ final class DomainMessage
 
     public static function anonMessage(string $id, object $message): DomainMessage
     {
-        $instance = new static($id);
-        $instance->time = new \DateTimeImmutable();
-        $instance->correlationId = $id;
-        $instance->causationId = $id;
-        $instance->message = $message;
-
-        return $instance;
+        return new static($id, $message);
     }
 
     public function forActor(ActorIdentity $newActor, int $version)
     {
         $instance = clone $this;
-        $instance->recorded = new \DateTimeImmutable();
+        $instance->recorded = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d h:i:s'));
         $instance->actor = $newActor;
         $instance->version = $version;
 
