@@ -24,7 +24,7 @@ final class DomainMessage
         $dateTimeImmutable = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d h:i:s'));
         $this->recorded = $dateTimeImmutable; //always recorded now.
         $this->produced = $dateTimeImmutable;
-        $this->time = new $dateTimeImmutable;
+        $this->time = $dateTimeImmutable;
         $this->id = $id;
         $this->correlationId = $id;
         $this->causationId = $id;
