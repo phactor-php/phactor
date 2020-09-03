@@ -12,8 +12,10 @@ class Router implements Handler
 
     public function __construct(Repository $actorRepository, string ...$actorClasses)
     {
-        if (!in_array(ActorInterface::class, class_implements($actorClasses))) {
-            throw new \RuntimeException('Actor must implement ActorInterface');
+        foreach ($actorClasses as $actorClass) {
+            if (!in_array(ActorInterface::class, class_implements($actorClass))) {
+                throw new \RuntimeException('Actor must implement ActorInterface');
+            }
         }
 
         $this->actorRepository = $actorRepository;
