@@ -13,9 +13,9 @@ final class DomainMessage
     private string $messageClass;
     private object $message;
     private array $metadata = [];
-    private ActorIdentity $producer;
+    private ?ActorIdentity $producer = null;
     private \DateTimeImmutable $produced;
-    private ActorIdentity $actor;
+    private ?ActorIdentity $actor = null;
     private int $version;
     private \DateTimeImmutable $recorded;
 
@@ -139,6 +139,6 @@ final class DomainMessage
 
     public function isNewMessage(): bool
     {
-        return $this->actor !== null && $this->actor->equals($this->producer);
+        return $this->producer === null || $this->actor !== null && $this->actor->equals($this->producer);
     }
 }
