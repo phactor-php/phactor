@@ -32,6 +32,13 @@ class AbstractActor implements ActorInterface
 
         $this->id = $id;
         $this->subscriber = $subscriber;
+
+        $this->init();
+    }
+
+    protected function init()
+    {
+
     }
 
     public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history)
