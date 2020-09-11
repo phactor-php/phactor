@@ -10,7 +10,9 @@ interface ActorInterface
 {
     public function __construct(Generator $identityGenerator, Subscriber $subscriber, string $id = null);
 
-    public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history);
+    public static function fromSnapshot(string $snapshot, Generator $identityGenerator, Subscriber $subscriber, DomainMessage ...$history): ActorInterface;
+
+    public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history): ActorInterface;
 
     public static function extractId(DomainMessage $message): ?string;
 
@@ -25,4 +27,10 @@ interface ActorInterface
     public function id(): string;
 
     public function committed(): void;
+
+    public function shouldSnapshot(): bool;
+
+    public function snapshot(): string;
+
+    public function getVersion(): int;
 }

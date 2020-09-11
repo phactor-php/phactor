@@ -3,16 +3,17 @@
 namespace Phactor\Actor;
 
 use Phactor\Actor\Subscription\Subscriber;
+use Phactor\EventStore\TakesSnapshots;
 use Phactor\Identity\Generator;
 use Phactor\Message\Handler;
 use Phactor\EventStore\EventStore;
 
 class Repository
 {
-    private $messageBus;
-    private $eventStore;
-    private $generator;
-    private $subscriber;
+    private Handler $messageBus;
+    private EventStore $eventStore;
+    private Generator $generator;
+    private Subscriber $subscriber;
 
     public function __construct(Handler $messageBus, EventStore $eventStore, Generator $generator, Subscriber $subscriber)
     {
@@ -27,6 +28,10 @@ class Repository
         $messages = $actor->newHistory();
         $this->eventStore->save(ActorIdentity::fromActor($actor), ...$messages);
 
+        if ($actor->shouldSnapshot() && $this->eventStore instanceof TakesSnapshots) {
+            $this->eventStore->saveSnapshot(ActorIdentity::fromActor($actor), $actor->getVersion(), $actor->snapshot());
+        }
+
         foreach ($actor->publishableMessages() as $message) {
             $this->messageBus->handle($message);
         }
@@ -36,8 +41,17 @@ class Repository
 
     public function load(ActorIdentity $actorIdentity): ActorInterface
     {
-        $messages = $this->eventStore->load($actorIdentity);
         $className = $actorIdentity->getClass();
+
+        if ($this->eventStore instanceof TakesSnapshots && $this->eventStore->hasSnapshot($actorIdentity)) {
+            $snapshot = $this->eventStore->loadSnapshot($actorIdentity);
+            $messages = $this->eventStore->loadFromLastSnapshot($actorIdentity);
+
+            /** @var ActorInterface $className */
+            return $className::fromSnapshot($snapshot, $this->generator, $this->subscriber, ...$messages);
+        }
+
+        $messages = $this->eventStore->load($actorIdentity);
 
         /** @var ActorInterface $className */
         return $className::fromHistory($this->generator, $this->subscriber, $actorIdentity->getId(), ...$messages);

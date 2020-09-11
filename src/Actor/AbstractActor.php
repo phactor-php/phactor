@@ -12,6 +12,7 @@ class AbstractActor implements ActorInterface
 {
     private const APPLY_PREFIX = 'apply';
     private const HANDLE_PREFIX = 'handle';
+    protected const SNAPSHOT_FREQUENCY = 10;
 
     private $identityGenerator;
     private $subscriber;
@@ -41,7 +42,26 @@ class AbstractActor implements ActorInterface
 
     }
 
-    public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history)
+    public static function fromSnapshot(string $snapshot, Generator $identityGenerator, Subscriber $subscriber, DomainMessage ...$history): ActorInterface
+    {
+        $instance = unserialize($snapshot);
+        if (!($instance instanceof AbstractActor)) {
+            throw new \RuntimeException('Invalid snapshot');
+        }
+
+        $instance->identityGenerator = $identityGenerator;
+        $instance->subscriber = $subscriber;
+
+        foreach ($history as $message) {
+            $instance->version++;
+            $instance->history[] = $message;
+            $instance->call($message, self::APPLY_PREFIX);
+        }
+
+        return $instance;
+    }
+
+    public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history): ActorInterface
     {
         $instance = new static($identityGenerator, $subscriber, $id);
         $instance->history = $history;
@@ -108,6 +128,28 @@ class AbstractActor implements ActorInterface
     {
         $this->producedMessages = [];
         $this->handledMessages = [];
+    }
+
+    public function shouldSnapshot(): bool
+    {
+        return $this->version >= self::SNAPSHOT_FREQUENCY && $this->version % self::SNAPSHOT_FREQUENCY === 0;
+    }
+
+    public function snapshot(): string
+    {
+        $snapshot = clone $this;
+        unset($snapshot->identityGenerator);
+        unset($snapshot->subscriber);
+        $snapshot->producedMessages = [];
+        $snapshot->handledMessages = [];
+        $snapshot->handlingMessage = null;
+
+        return serialize($snapshot);
+    }
+
+    public function getVersion(): int
+    {
+        return $this->version;
     }
 
     protected function fire($message): void
