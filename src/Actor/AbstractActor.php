@@ -19,7 +19,6 @@ class AbstractActor implements ActorInterface
     private $version = 0;
     /** @var ?DomainMessage */
     private $handlingMessage;
-    private $history = [];
     private $producedMessages = [];
     private $handledMessages = [];
     private $id;
@@ -54,7 +53,6 @@ class AbstractActor implements ActorInterface
 
         foreach ($history as $message) {
             $instance->version++;
-            $instance->history[] = $message;
             $instance->call($message, self::APPLY_PREFIX);
         }
 
@@ -64,7 +62,6 @@ class AbstractActor implements ActorInterface
     public static function fromHistory(Generator $identityGenerator, Subscriber $subscriber, string $id, DomainMessage ...$history): ActorInterface
     {
         $instance = new static($identityGenerator, $subscriber, $id);
-        $instance->history = $history;
 
         foreach ($history as $message) {
             $instance->version++;
@@ -96,7 +93,6 @@ class AbstractActor implements ActorInterface
 
         $message = $message->forActor(ActorIdentity::fromActor($this), $this->version);
 
-        $this->history[$this->version] = $message;
         $this->handledMessages[$this->version] = $message;
 
         $this->call($message, self::HANDLE_PREFIX);
