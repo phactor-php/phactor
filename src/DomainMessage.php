@@ -21,7 +21,7 @@ final class DomainMessage
 
     private function __construct(string $id, object $message)
     {
-        $dateTimeImmutable = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d h:i:s'));
+        $dateTimeImmutable = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
         $this->recorded = $dateTimeImmutable; //always recorded now.
         $this->produced = $dateTimeImmutable;
         $this->time = $dateTimeImmutable;
@@ -60,7 +60,7 @@ final class DomainMessage
     ): DomainMessage {
 
         $instance = new static($id, $message);
-        $instance->time = new \DateTimeImmutable($when->format('Y-m-d h:i:s'));
+        $instance->time = new \DateTimeImmutable($when->format('Y-m-d H:i:s'));
         $instance->version = $version;
         $instance->actor = $actorIdentity;
         $instance->producer = $actorIdentity;
@@ -78,7 +78,7 @@ final class DomainMessage
     public function forActor(ActorIdentity $newActor, int $version)
     {
         $instance = clone $this;
-        $instance->recorded = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d h:i:s'));
+        $instance->recorded = new \DateTimeImmutable((new \DateTimeImmutable())->format('Y-m-d H:i:s'));
         $instance->actor = $newActor;
         $instance->version = $version;
 
