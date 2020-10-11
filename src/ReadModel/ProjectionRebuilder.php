@@ -2,20 +2,19 @@
 
 namespace Phactor\ReadModel;
 
+use Phactor\EventStore\LoadsEvents;
 use Phactor\Message\Handler;
-use Phactor\EventStore\EventStore;
-use Doctrine\Common\Collections\Criteria;
 
 class ProjectionRebuilder
 {
-    private $eventStore;
+    private LoadsEvents $eventStore;
 
-    public function __construct(EventStore $eventStore)
+    public function __construct(LoadsEvents $eventStore)
     {
         $this->eventStore = $eventStore;
     }
 
-    public function rebuild(Handler $projection, $subscriptions = [], $force = false)
+    public function rebuild(Handler $projection, array $subscriptions = [], bool $force = false)
     {
         if ($projection instanceof ResettableInterface) {
             $projection->reset();
@@ -27,8 +26,7 @@ class ProjectionRebuilder
             $projection->preRebuild();
         }
 
-        //@TODO check this.
-        $events = $this->eventStore->eventsMatching(Criteria::create()->where(Criteria::expr()->in('messageClass', $subscriptions)));
+        $events = $this->eventStore->loadEventsByClasses(...$subscriptions);
 
         foreach ($events as $event) {
             $projection->handle($event);

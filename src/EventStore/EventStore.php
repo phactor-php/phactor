@@ -7,9 +7,7 @@ use Doctrine\Common\Collections\Criteria;
 
 interface EventStore
 {
-    public function load(ActorIdentity $identity): Iterable;
+    public function load(ActorIdentity $identity): iterable;
 
-    public function save(ActorIdentity $identity, DomainMessage ...$messages);
-
-    public function eventsMatching(Criteria $criteria): Iterable;
+    public function save(ActorIdentity $identity, DomainMessage ...$messages): void;
 }
