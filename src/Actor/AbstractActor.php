@@ -158,7 +158,7 @@ class AbstractActor implements ActorInterface
             $this->version,
             $message
         );
-        $domainMessage->withMetadata($this->handlingMessage->getMetadata());
+        $domainMessage = $domainMessage->withMetadata($this->handlingMessage->getMetadata());
         $this->producedMessages[$this->version] = $domainMessage;
     }
 
@@ -173,7 +173,7 @@ class AbstractActor implements ActorInterface
             $this->version,
             $message
         );
-        $domainMessage->withMetadata($this->handlingMessage->getMetadata());
+        $domainMessage = $domainMessage->withMetadata($this->handlingMessage->getMetadata());
         $this->producedMessages[$this->version] = $domainMessage;
     }
 
