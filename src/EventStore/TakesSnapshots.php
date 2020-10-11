@@ -12,5 +12,5 @@ interface TakesSnapshots
 
     public function loadSnapshot(ActorIdentity $actorIdentity): string;
 
-    public function loadFromLastSnapshot(ActorIdentity $actorIdentity);
+    public function loadFromLastSnapshot(ActorIdentity $actorIdentity): iterable;
 }

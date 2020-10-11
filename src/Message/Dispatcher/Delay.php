@@ -3,6 +3,7 @@
 namespace Phactor\Message\Dispatcher;
 
 use Phactor\DomainMessage;
+use Phactor\EventStore\LoadsEvents;
 use Phactor\Message\Dispatcher\Delay\DeferredMessage;
 use Phactor\Message\Handler;
 use Phactor\EventStore\EventStore;
@@ -11,11 +12,11 @@ use Doctrine\Common\Collections\Criteria;
 
 class Delay implements Handler
 {
-    private $wrappedHandler;
-    private $repository;
-    private $eventStore;
+    private Handler $wrappedHandler;
+    private Repository $repository;
+    private LoadsEvents $eventStore;
 
-    public function __construct(Handler $wrappedHandler, Repository $repository, EventStore $eventStore)
+    public function __construct(Handler $wrappedHandler, Repository $repository, LoadsEvents $eventStore)
     {
         $this->wrappedHandler = $wrappedHandler;
         $this->repository = $repository;
@@ -42,7 +43,7 @@ class Delay implements Handler
                 continue;
             }
 
-            $domainMessages = $this->eventStore->eventsMatching((new Criteria())->where(Criteria::expr()->eq('id', $deferredMessage->getId())));
+            $domainMessages = $this->eventStore->loadEventsByIds($deferredMessage->getId());
             if ($domainMessages instanceof \Traversable) {
                 $domainMessages = \iterator_to_array($domainMessages);
             }
