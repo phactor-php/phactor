@@ -1,6 +1,6 @@
 {
   "name": "phactor/phactor",
-  "description": "PHP Message sourcing libaray",
+  "description": "PHP Message sourcing library",
   "minimum-stability": "stable",
   "license": "MIT",
   "require": {
@@ -22,10 +22,5 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.1"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-develop": "2.0.x-dev"
-    }
   }
 }
