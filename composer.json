@@ -1,6 +1,6 @@
 {
   "name": "phactor/phactor",
-  "description": "PHP Message sourcing libaray",
+  "description": "PHP Message sourcing libary",
   "minimum-stability": "stable",
   "license": "MIT",
   "require": {
