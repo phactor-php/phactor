@@ -10,9 +10,9 @@ use Phactor\Message\Handler;
 
 class Authorise implements Handler
 {
-    private $wrappedHandler;
-    private $rbac;
-    private $currentUser;
+    private Handler $wrappedHandler;
+    private array $rbac;
+    private User $currentUser;
 
     public function __construct(Handler $wrappedHandler, array $rbac, User $currentUser)
     {

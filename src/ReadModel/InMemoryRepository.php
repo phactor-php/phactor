@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Criteria;
 
 class InMemoryRepository implements Repository
 {
-    private $collection;
+    private ArrayCollection $collection;
 
     public function __construct()
     {

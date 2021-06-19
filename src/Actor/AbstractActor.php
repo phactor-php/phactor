@@ -14,14 +14,13 @@ class AbstractActor implements ActorInterface
     private const HANDLE_PREFIX = 'handle';
     protected const SNAPSHOT_FREQUENCY = 10;
 
-    private $identityGenerator;
-    private $subscriber;
-    private $version = 0;
-    /** @var ?DomainMessage */
-    private $handlingMessage;
-    private $producedMessages = [];
-    private $handledMessages = [];
-    private $id;
+    private Generator $identityGenerator;
+    private Subscriber $subscriber;
+    private int $version = 0;
+    private ?DomainMessage $handlingMessage;
+    private array $producedMessages = [];
+    private array $handledMessages = [];
+    private string $id;
 
     public function __construct(Generator $identityGenerator, Subscriber $subscriber, string $id = null)
     {

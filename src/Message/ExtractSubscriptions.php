@@ -4,7 +4,7 @@ namespace Phactor\Message;
 
 class ExtractSubscriptions implements MessageSubscriptionProvider
 {
-    private $from;
+    private string $from;
 
     public function __construct(string $from)
     {

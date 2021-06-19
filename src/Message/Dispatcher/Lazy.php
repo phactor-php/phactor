@@ -10,9 +10,9 @@ use Psr\Log\NullLogger;
 
 class Lazy implements Handler
 {
-    private $subscriptions;
-    private $log;
-    private $container;
+    private array $subscriptions;
+    private LoggerInterface $log;
+    private ContainerInterface $container;
 
     public function __construct(array $subscriptions, ContainerInterface $container, ?LoggerInterface $log = null)
     {

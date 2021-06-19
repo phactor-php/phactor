@@ -7,7 +7,7 @@ use Phactor\Message\Handler;
 
 class All implements Handler
 {
-    private $handlers;
+    private array $handlers;
 
     public function __construct(Handler ...$handlers)
     {

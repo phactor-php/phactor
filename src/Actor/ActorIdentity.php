@@ -4,8 +4,8 @@ namespace Phactor\Actor;
 
 final class ActorIdentity
 {
-    private $class;
-    private $id;
+    private string $class;
+    private string $id;
 
     public function __construct(string $class, string $id)
     {

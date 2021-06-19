@@ -8,7 +8,7 @@ use Phactor\ReadModel\Repository;
 
 final class Subscriber
 {
-    private $repository;
+    private Repository $repository;
 
     public function __construct(Repository $repository)
     {

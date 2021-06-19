@@ -6,7 +6,7 @@ namespace Phactor\EventStore;
 
 interface LoadsEvents
 {
-    public function loadEventsByIds(string ...$ids);
+    public function loadEventsByIds(string ...$ids): iterable;
 
-    public function loadEventsByClasses(string ...$classes);
+    public function loadEventsByClasses(string ...$classes): iterable;
 }

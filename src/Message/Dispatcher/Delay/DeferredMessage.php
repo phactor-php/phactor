@@ -6,8 +6,8 @@ use Phactor\DomainMessage;
 
 class DeferredMessage
 {
-    private $id;
-    private $time;
+    private string $id;
+    private \DateTimeInterface $time;
 
     public function __construct(DomainMessage $message)
     {
