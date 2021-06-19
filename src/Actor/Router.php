@@ -7,8 +7,8 @@ use Phactor\Message\Handler;
 
 class Router implements Handler
 {
-    private $actorClasses;
-    private $actorRepository;
+    private array $actorClasses;
+    private Repository $actorRepository;
 
     public function __construct(Repository $actorRepository, string ...$actorClasses)
     {

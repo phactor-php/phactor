@@ -7,8 +7,8 @@ use Phactor\Message\Handler;
 
 class Capture implements Handler
 {
-    private $handler;
-    private $messages;
+    private Handler $handler;
+    private array $messages = [];
 
     public function __construct(Handler $handler)
     {

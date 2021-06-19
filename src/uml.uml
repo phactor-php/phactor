@@ -1,0 +1,104 @@
+@startuml
+namespace Phactor {
+namespace Message {
+namespace Dispatcher {
+namespace Delay {
+}
+namespace Authorise {
+}
+}
+}
+namespace EventStore {
+}
+namespace ReadModel {
+}
+namespace Identity {
+}
+namespace Actor {
+namespace Subscription {
+}
+}
+}
+namespace Psr {
+namespace Log {
+}
+namespace Container {
+}
+}
+
+Phactor.Message.Handler --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.InMemory --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.InMemory --|> Phactor.Message.Handler
+Phactor.Message.Dispatcher.InMemory --|> Psr.Log.LoggerInterface
+Phactor.Message.Dispatcher.Delay --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.Delay --|> Phactor.Message.Dispatcher.Delay.DeferredMessage
+Phactor.Message.Dispatcher.Delay --|> Phactor.Message.Handler
+Phactor.Message.Dispatcher.Delay --|> Phactor.EventStore.EventStore
+Phactor.Message.Dispatcher.Delay --|> Phactor.ReadModel.Repository
+Phactor.Message.Dispatcher.Capture --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.Capture --|> Phactor.Message.Handler
+Phactor.Message.Dispatcher.Queue --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.Queue --|> Phactor.Message.Handler
+Phactor.Message.Dispatcher.Authorise.AnonUser --|> Phactor.Message.Dispatcher.Authorise.User
+Phactor.Message.Dispatcher.Authorise --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.Authorise --|> Phactor.Message.Dispatcher.Authorise.AccessDenied
+Phactor.Message.Dispatcher.Authorise --|> Phactor.Message.Dispatcher.Authorise.Restricted
+Phactor.Message.Dispatcher.Authorise --|> Phactor.Message.Dispatcher.Authorise.User
+Phactor.Message.Dispatcher.Authorise --|> Phactor.Message.Handler
+Phactor.Message.Dispatcher.Lazy --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.Lazy --|> Phactor.Message.Handler
+Phactor.Message.Dispatcher.Lazy --|> Psr.Container.ContainerInterface
+Phactor.Message.Dispatcher.Lazy --|> Psr.Log.LoggerInterface
+Phactor.Message.Dispatcher.All --|> Phactor.DomainMessage
+Phactor.Message.Dispatcher.All --|> Phactor.Message.Handler
+Phactor.Message.Dispatcher.Delay.DeferredMessage --|> Phactor.DomainMessage
+Phactor.Message.MessageFirer --|> Phactor.DomainMessage
+Phactor.Message.MessageFirer --|> Phactor.Identity.Generator
+Phactor.Message.MessageFirer --|> Phactor.Message.Dispatcher.Capture
+Phactor.Message.MessageFirer --|> Phactor.Message.FiresMessages
+Phactor.Message.MessageFirer --|> Phactor.Message.Handler
+Phactor.Identity.YouTubeStyleIdentityGenerator --|> Phactor.Identity.Generator
+Phactor.DomainMessage --|> Phactor.Actor.ActorIdentity
+Phactor.ReadModel.InMemoryRepository --|> Phactor.ReadModel.Repository
+Phactor.ReadModel.ProjectionRebuilder --|> Phactor.Message.Handler
+Phactor.ReadModel.ProjectionRebuilder --|> Phactor.EventStore.EventStore
+Phactor.ReadModel.ProjectionRebuilder --|> Phactor.ReadModel.ResettableInterface
+Phactor.ReadModel.ProjectionRebuilder --|> Phactor.ReadModel.PreRebuildInterface
+Phactor.ReadModel.ProjectionRebuilder --|> Phactor.ReadModel.PostRebuildInterface
+Phactor.EventStore.InMemoryEventStore --|> Phactor.Actor.ActorIdentity
+Phactor.EventStore.InMemoryEventStore --|> Phactor.DomainMessage
+Phactor.EventStore.InMemoryEventStore --|> Phactor.EventStore.EventStore
+Phactor.EventStore.InMemoryEventStore --|> Phactor.EventStore.NoEventsFound
+Phactor.EventStore.EventStore --|> Phactor.Actor.ActorIdentity
+Phactor.EventStore.EventStore --|> Phactor.DomainMessage
+Phactor.Actor.ActorIdentity --|> Phactor.Actor.ActorInterface
+Phactor.Actor.Router --|> Phactor.DomainMessage
+Phactor.Actor.Router --|> Phactor.Message.Handler
+Phactor.Actor.Router --|> Phactor.Actor.Repository
+Phactor.Actor.Router --|> Phactor.Actor.ActorInterface
+Phactor.Actor.Router --|> Phactor.Actor.ActorIdentity
+Phactor.Actor.AbstractActor --|> Phactor.Actor.Subscription.Subscriber
+Phactor.Actor.AbstractActor --|> Phactor.Identity.Generator
+Phactor.Actor.AbstractActor --|> Phactor.Actor.ActorIdentity
+Phactor.Actor.AbstractActor --|> Phactor.DomainMessage
+Phactor.Actor.AbstractActor --|> Phactor.Actor.HasActorId
+Phactor.Actor.AbstractActor --|> Phactor.Actor.ActorInterface
+Phactor.Actor.ActorInterface --|> Phactor.Actor.Subscription.Subscriber
+Phactor.Actor.ActorInterface --|> Phactor.Identity.Generator
+Phactor.Actor.ActorInterface --|> Phactor.DomainMessage
+Phactor.Actor.Repository --|> Phactor.Actor.Subscription.Subscriber
+Phactor.Actor.Repository --|> Phactor.Identity.Generator
+Phactor.Actor.Repository --|> Phactor.Message.Handler
+Phactor.Actor.Repository --|> Phactor.EventStore.EventStore
+Phactor.Actor.Repository --|> Phactor.Actor.ActorInterface
+Phactor.Actor.Repository --|> Phactor.Actor.ActorIdentity
+Phactor.Actor.Subscription.Subscriber --|> Phactor.Actor.ActorIdentity
+Phactor.Actor.Subscription.Subscriber --|> Phactor.ReadModel.Repository
+Phactor.Actor.Subscription.Subscriber --|> Phactor.Actor.Subscription.Subscription
+Phactor.Actor.Subscription.Subscription --|> Phactor.Actor.ActorIdentity
+Phactor.Actor.Subscription.SubscriptionHandler --|> Phactor.Actor.ActorIdentity
+Phactor.Actor.Subscription.SubscriptionHandler --|> Phactor.Actor.Repository
+Phactor.Actor.Subscription.SubscriptionHandler --|> Phactor.DomainMessage
+Phactor.Actor.Subscription.SubscriptionHandler --|> Phactor.Message.Handler
+Phactor.Actor.Subscription.SubscriptionHandler --|> Phactor.ReadModel.Repository
+@enduml

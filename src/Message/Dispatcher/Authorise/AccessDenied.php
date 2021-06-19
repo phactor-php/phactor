@@ -4,7 +4,6 @@ namespace Phactor\Message\Dispatcher\Authorise;
 
 class AccessDenied extends \RuntimeException
 {
-
     public static function userNotAllowed(string $userId, array $userRoles, string $messageClass, array $allowedRoles)
     {
         $message = sprintf(

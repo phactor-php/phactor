@@ -7,9 +7,9 @@ use Phactor\Message\Handler;
 
 class Queue implements Handler
 {
-    private $handler;
-    private $queue;
-    private $isDispatching = false;
+    private Handler $handler;
+    private array $queue;
+    private bool $isDispatching = false;
 
     public function __construct(Handler $handler)
     {

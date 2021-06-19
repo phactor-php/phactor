@@ -9,8 +9,8 @@ use Psr\Log\NullLogger;
 
 class InMemory implements Handler
 {
-    private $subscriptions;
-    private $log;
+    private array $subscriptions;
+    private LoggerInterface $log;
 
     public function __construct(array $subscriptions, ?LoggerInterface $log = null)
     {

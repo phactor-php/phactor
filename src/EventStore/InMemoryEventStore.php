@@ -10,8 +10,8 @@ use phpDocumentor\Reflection\Types\Iterable_;
 
 class InMemoryEventStore implements EventStore, LoadsEvents
 {
-    private $store;
-    private $events;
+    private array $store;
+    private array $events;
 
     public function load(ActorIdentity $identity): iterable
     {

@@ -11,8 +11,8 @@ use Phactor\ReadModel\Repository as SubscriptionRepository;
 
 final class SubscriptionHandler implements Handler
 {
-    private $repository;
-    private $actorRepository;
+    private SubscriptionRepository $repository;
+    private ActorRepository $actorRepository;
 
     public function __construct(SubscriptionRepository $repository, ActorRepository $actorRepository)
     {

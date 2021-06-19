@@ -6,10 +6,10 @@ use Phactor\Actor\ActorIdentity;
 
 final class Subscription
 {
-    private $listenerClass;
-    private $listenerId;
-    private $subscribedToClass;
-    private $subscribedToId;
+    private string $listenerClass;
+    private string $listenerId;
+    private string $subscribedToClass;
+    private string $subscribedToId;
 
     public function __construct(ActorIdentity $listener, ActorIdentity $subscribedTo)
     {

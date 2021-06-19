@@ -10,8 +10,8 @@ use Phactor\Message\Dispatcher\Capture;
 
 class MessageFirer implements FiresMessages
 {
-    private $identityGenerator;
-    private $wrappedHandler;
+    private Generator $identityGenerator;
+    private Handler $wrappedHandler;
 
     public function __construct(Generator $identityGenerator, Handler $wrappedHandler)
     {
